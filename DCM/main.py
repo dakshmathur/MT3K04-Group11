@@ -52,7 +52,7 @@ def welcome_state():
         if usr.login(username, password):
 
             # Cache the current user as a global variable
-            usr.set_current_user(username)
+            set_current_user(username)
 
             # Change the state to dashboard
             change_state(States.DASHBOARD)
