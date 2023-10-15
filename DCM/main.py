@@ -10,8 +10,7 @@ PARAMETERS = ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Ventr
 PARAMS = [[1, 1, 1, 0, 1, 0, 0, 0], #AOO - 0
           [1, 1, 1, 0, 1, 0, 0, 1], #AAI - 1
           [1, 1, 0, 1, 0, 1, 0, 0], #VOO - 2
-          [1, 1, 0, 1, 0, 1, 1, 0]  #VVI - 3
-]
+          [1, 1, 0, 1, 0, 1, 1, 0]]  #VVI - 3
 
 # State variables
 connected = False
@@ -147,7 +146,8 @@ def dashboard_state():
 
     def submit_parameters(values_list):
         updated_values = [val.get() for val in values_list]
-        usr.save_current_parameters(current_user_data[0], MODES.index(mode.get()), updated_values)
+        if (usr.is_valid_parameters(updated_values, mode.get())):
+            usr.save_current_parameters(current_user_data[0], MODES.index(mode.get()), updated_values)
 
     # Mode select
     mode = tk.StringVar(frame)
