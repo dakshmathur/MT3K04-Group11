@@ -74,8 +74,6 @@ def login(username, password):
 
 # Register the user
 def register(username, password):
-
-    # Write the username and password to the file
     with open("users.csv", "a") as file:
         file.write(f"{username},{password},AOO,")
         file.write(f"60,120,3.5,0.4,")
@@ -117,3 +115,26 @@ def get_user(username):
         if stored_username == username:
             return data
     return None
+
+def save_current_parameters(current_username, j, updated_values):
+    current_data = get_user(current_username)
+    new_data = current_data.copy()
+
+    k = 1 if (j > 1) else 2 if (j > 2) else 0
+    l = 0
+
+    for i in range(j*4+k+3,j*4+k+3+len(updated_values)):
+        new_data[i] = updated_values[l]
+        l += 1
+
+    with open("users.csv", "r") as file:
+        lines = file.readlines()
+    for line in lines:
+        data = line.split(",")
+        stored_username = data[0]
+        if stored_username == current_username:
+            lines[lines.index(line)] = ",".join(new_data)
+            break
+
+    with open("users.csv", "w") as file:
+        file.writelines(lines)
