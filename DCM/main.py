@@ -5,6 +5,7 @@ import user as usr
 # Import the enum class for states
 from enum import Enum
 
+# Constant variables for the modes and parameters of the pacemaker
 MODES = ['AOO', 'AAI', 'VOO', 'VVI']
 PARAMETERS = ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Ventricular Amplitude", "Atrial Pulse Width", "Ventricular Pulse Width", "VRP", "ARP"]
 PARAMS = [[1, 1, 1, 0, 1, 0, 0, 0], #AOO - 0
@@ -33,6 +34,7 @@ frame.pack(pady=5)
 frame2 = tk.Frame(window)
 frame2.pack(pady=5)
 
+'''
 def render_backround():
     backroundImg = ImageTk.PhotoImage(file = "BackroundPossible.jpg")
     canvas = tk.Canvas(window, width=700, height=3500)
@@ -45,6 +47,7 @@ def render_backround():
         image2 = ImageTk.PhotoImage(resized)
         canvas.create_image(0,0,image=image2,anchor='nw')
     window.bind("<Configure>", resize_image)
+'''
     
 # Define the current state
 current_state = tk.StringVar()
@@ -55,16 +58,26 @@ def welcome_state():
     def get_credentials():
         return entry_username.get(), entry_password.get()
 
+    # Login the user
     def login_user():   
         username, password = get_credentials()
         if usr.login(username, password):
+
+            # Cache the current user as a global variable
             set_current_user(username)
+
+            # Change the state to dashboard
             change_state(States.DASHBOARD)
 
+    # Register the user
     def register_user():
         username, password = get_credentials()
+
+        # Check if the user credentials are valid
         if usr.is_valid(username, password):
             usr.register(username, password)
+
+            # Clear the username and password fields for login
             entry_username.delete(0, tk.END)
             entry_password.delete(0, tk.END)
 
@@ -120,12 +133,16 @@ def dashboard_state():
 
         usr.save_current_mode(current_user_data[0], mode.get())
 
+        # Get the current mode
         j = MODES.index(mode.get())
+
+        # Get the csv data offset for the current mode in the database
         k = 1 if (j > 1) else 2 if (j > 2) else 0
         l = 0
 
         entry_values = []
 
+        # Create the parameter labels and entry boxes for the current mode 
         for i in range(len(PARAMETERS)):
             if PARAMS[j][i]:
                 label_parameter = tk.Label(frame2, text=PARAMETERS[i])
@@ -141,12 +158,20 @@ def dashboard_state():
 
                 entry_values.append(entry_value)
 
+        # Submit button
         button_submit = tk.Button(frame2, text="Submit", command=lambda: submit_parameters(entry_values))
         button_submit.pack()
 
+    # Submit the parameters
     def submit_parameters(values_list):
+
+        # Update the values
         updated_values = [val.get() for val in values_list]
+
+        # Check if the values are valid
         if (usr.is_valid_parameters(updated_values, mode.get())):
+
+            # Update the parameters in the database
             usr.save_current_parameters(current_user_data[0], MODES.index(mode.get()), updated_values)
 
     # Mode select
@@ -159,9 +184,10 @@ def dashboard_state():
     mode_menu.pack(pady=5)
     button_mode.pack(pady=5)
 
+    # Render the parameters
     update_parameters()
 
-    #Logout button
+    # Logout button
     button_logout = tk.Button(frame, text="Logout", command=lambda: change_state(States.WELCOME))
     button_logout.pack(pady=5)
 
@@ -175,6 +201,7 @@ def change_state(new_state):
     clear_frame(frame)
     clear_frame(frame2)
     
+    # Render the new state
     if new_state == States.WELCOME:
         global current_user_data
         current_user_data = None

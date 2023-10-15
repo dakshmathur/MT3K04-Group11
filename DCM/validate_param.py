@@ -41,3 +41,5 @@ def validate_pw(value):
         return "Pulse Width must be a multiple of 0.1ms between 0.1ms and 1.9ms.\n"
     else:
         return False
+    
+def 
