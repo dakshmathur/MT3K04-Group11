@@ -1,7 +1,7 @@
 import tkinter as tk
 import user as usr
 from settings import MODES, PARAMETERS, PARAMS, States
-#from PIL import ImageTk, Image
+from PIL import ImageTk, Image
 
 # Import the enum class for states
 from enum import Enum
@@ -14,29 +14,50 @@ current_user_data = None
 # Tkinter setup
 window = tk.Tk()
 window.title("Pacemaker Device Controller-Monitor")
-window.geometry("750x550")
+window.geometry("750x450")
 
-frame = tk.Frame(window)
-frame.pack(pady=5)
+def render_backround():
+    canvas = tk.Canvas(window)
+    canvas.pack(fill="both", expand=True)
+    
+    def resize_image(event):
+        # Get the current window size
+        new_width = event.width
+        new_height = event.height
+        
+        # Load the background image and resize it to fit the window
+        image = Image.open("backroundFinal.jpg")
+        image = image.resize((new_width, new_height), Image.LANCZOS)  # Use ANTIALIAS for better image quality
+        img = ImageTk.PhotoImage(image)
+        
+        # Update the canvas size to match the window size
+        canvas.config(width=new_width, height=new_height)
+        
+        # Update the image on the canvas
+        canvas.create_image(0, 0, image=img, anchor="nw")
+        
+        # Keep a reference to the image to prevent it from being garbage collected
+        canvas.img = img
+    
+    # Bind the resize_image function to the <Configure> event
+    canvas.bind("<Configure>", resize_image)
+    
+    # Initially, display the image at the canvas size
+    canvas.event_generate("<Configure>")
+    
+    frame = tk.Frame(canvas, bg='#20202A')
+    frame.place(relx=0.25, rely=0.25, relwidth=0.5, relheight=0.5)
+    
+    return canvas, frame
+
+canvas, frame = render_backround()
 
 frame2 = tk.Frame(window)
 frame2.pack(pady=5)
-
-'''
-def render_backround():
-    backroundImg = ImageTk.PhotoImage(file = "BackroundPossible.jpg")
-    canvas = tk.Canvas(window, width=700, height=3500)
-    canvas.pack(fill = "both", expand=True)
-    canvas.create_image(0,0,image=backroundImg,anchor='nw')
-    def resize_image(e):
-        global image, resized, image2
-        image = Image.open("BackroundPossible.jpg")
-        resized = image.resize((e.width, e.height), Image.LANCZOS)
-        image2 = ImageTk.PhotoImage(resized)
-        canvas.create_image(0,0,image=image2,anchor='nw')
-    window.bind("<Configure>", resize_image)
-'''
     
+# Define the current state
+current_state = tk.StringVar()
+
 # Define the current state
 current_state = tk.StringVar()
 
@@ -70,36 +91,31 @@ def welcome_state():
             entry_password.delete(0, tk.END)
 
     # User and password labels and entry boxes
-    label_username = tk.Label(frame, text="Username:")
+    label_username = tk.Label(frame, text="Username:", bg='#20202A', fg='white')
     entry_username = tk.Entry(frame)
 
-    label_password = tk.Label(frame, text="Password:")
+    label_password = tk.Label(frame, text="Password:", bg='#20202A', fg='white')
     entry_password = tk.Entry(frame, show="*")
 
     # Login and register buttons
-    button_login = tk.Button(frame, text="Login", command=login_user)
-    button_register = tk.Button(frame, text="Register", command=register_user)
+    button_login = tk.Button(frame, text="Login", command=login_user, bg="white", fg="black")
+    button_register = tk.Button(frame, text="Register", command=register_user, bg="white", fg="black")
 
     # Pack the login and register widgets
-    label_username.pack()
-    entry_username.pack()
+    label_username.place(relx=0.5, rely=0.2, anchor='center')
+    entry_username.place(relx=0.5, rely=0.3, anchor='center')
 
-    label_password.pack()
-    entry_password.pack()
+    label_password.place(relx=0.5, rely=0.4, anchor='center')
+    entry_password.place(relx=0.5, rely=0.5, anchor='center')
 
-    button_login.pack(pady=5)
-    button_register.pack(pady=5)
+    button_login.place(relx=0.42, rely=0.65, anchor='center')
+    button_register.place(relx=0.58, rely=0.65, anchor='center')
 
-    # Other information on welcome screen
-    frame3 = tk.Frame(window)
+    # Version num/instatution
+    label_version = tk.Label(frame, text="Version 0.1.0\tMcMaster University", bg='#20202A', fg='white')
+    label_version.place(relx=0.5, rely=0.95, anchor='center')
 
-    label_software_revision = tk.Label(frame3, text="Version 0.1.0  ")
-    label_institution_name = tk.Label(frame3, text="McMaster University")
 
-    label_software_revision.grid(row=0, column=0)
-    label_institution_name.grid(row=0, column=1)
-
-    frame3.pack(pady=5)
 
 # Define the dashboard state 
 def dashboard_state():
