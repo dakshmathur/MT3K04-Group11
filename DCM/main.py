@@ -26,7 +26,7 @@ def render_backround():
         new_height = event.height
         
         # Load the background image and resize it to fit the window
-        image = Image.open("backroundFinal.jpg")
+        image = Image.open(r"C:\Users\armin\Desktop\MT3K04-Group11\DCM\backroundFinal.jpg")
         image = image.resize((new_width, new_height), Image.LANCZOS)  # Use ANTIALIAS for better image quality
         img = ImageTk.PhotoImage(image)
         
@@ -46,14 +46,17 @@ def render_backround():
     canvas.event_generate("<Configure>")
     
     frame = tk.Frame(canvas, bg='#20202A')
-    frame.place(relx=0.25, rely=0.25, relwidth=0.5, relheight=0.5)
+    frame.place(relx=0.5, rely=0.5, relwidth=0.75, relheight=0.75, anchor='center')
+
+    frame2 = tk.Frame(canvas, bg='#20202A')
+    frame2.place(relx=0.5, rely=0.5, relwidth=0.75, relheight=0.75, anchor='center')
     
-    return canvas, frame
+    return canvas, frame, frame2
 
-canvas, frame = render_backround()
+canvas,frame2,frame = render_backround()
 
-frame2 = tk.Frame(window)
-frame2.pack(pady=5)
+#frame2 = tk.Frame(window)
+#frame2.pack(pady=5)
     
 # Define the current state
 current_state = tk.StringVar()
@@ -217,6 +220,7 @@ def change_state(new_state):
     # Clear the window
     clear_frame(frame)
     clear_frame(frame2)
+
     
     # Render the new state
     if new_state == States.WELCOME:
