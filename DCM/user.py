@@ -168,19 +168,13 @@ def is_valid_parameters(updated_values, mode):
         if VPW != False:
             error_message += VPW
 
+    if mode == "AAI" or mode == "VVI":
+        RP = v.validate_rp(updated_values[4])
+        if RP != False:
+            error_message += RP
+
     if error_message != "":
         messagebox.showerror("Error", error_message)
         return False
     else:
         return True
-'''
-    if mode == "AAI":
-        ARP = v.is_valid_arp(updated_values[4])
-        if ARP != False:
-            error_message += ARP
-
-    if mode == "VVI":
-        VRP = v.is_valid_vrp(updated_values[4])
-        if VRP != False:
-            error_message += VRP     
-'''      

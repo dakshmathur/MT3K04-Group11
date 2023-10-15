@@ -35,11 +35,22 @@ def validate_pa(value):
 def validate_pw(value):
     error = ""
     val = float(value)
+    print(val)
+    print(((val*10) % 0.1))
+
     if 0.05 > val or val > 1.9:
         return "Pulse Width must be between 0.05ms and 1.9ms.\n"
-    elif val % 0.1 != 0:
+    elif ((val*10) % 0.1) != 0:
         return "Pulse Width must be a multiple of 0.1ms between 0.1ms and 1.9ms.\n"
     else:
         return False
     
-def 
+def validate_rp(value):
+    error = ""
+    val = float(value)
+    if val < 150 or val > 500:
+        return "Refractory Period must be between 150ms and 500ms.\n"
+    elif val % 10 != 0:
+        return "Refractory Period must be a multiple of 10ms between 150ms and 500ms.\n"
+    else:
+        return False
