@@ -1,5 +1,6 @@
 import re
 import validate_param as v
+from settings import PASSWORD_RULES
 from tkinter import messagebox
 
 def is_valid(username, password):
@@ -9,13 +10,13 @@ def is_valid(username, password):
             error_message += "Username empty.\n"
         if not password:
             error_message += "Password empty.\n"
-        if len(password) < 6:
+        if len(password) < PASSWORD_RULES['min_length']:
             error_message += "Password must be at least 6 characters long.\n"
-        if not re.search(r'[!@#$%^&*()-_+=]', password):
+        if not re.search(PASSWORD_RULES['special_chars'], password):
             error_message += "Password must contain at least one special character.\n"
-        if not re.search(r'[0-9]', password):
+        if not re.search(PASSWORD_RULES['number_range'], password):
             error_message += "Password must contain at least one digit.\n"
-        if not re.search(r'[A-Z]', password):
+        if not re.search(PASSWORD_RULES['upper_case'], password):
             error_message += "Password must contain at least one uppercase letter.\n"
         if is_existing_user(username):
             error_message = "User already exists.\n"
@@ -84,6 +85,7 @@ def register(username, password):
 
     messagebox.showinfo("Success", "User registered successfully, please login.")
 
+# Get the current mode of the user
 def get_current_mode(username):
     with open("users.csv", "r") as file:
         lines = file.readlines()
@@ -94,6 +96,7 @@ def get_current_mode(username):
             return data[2]
     return None
 
+# Save the current mode of the user to the csv database
 def save_current_mode(current_username, mode):
     with open("users.csv", "r") as file:
         lines = file.readlines()
@@ -107,6 +110,7 @@ def save_current_mode(current_username, mode):
     with open("users.csv", "w") as file:
         file.writelines(lines)
 
+# Get the current user's data
 def get_user(username):
     with open("users.csv", "r") as file:
         lines = file.readlines()
@@ -117,6 +121,7 @@ def get_user(username):
             return data
     return None
 
+# Save the current parameters of the user to the csv database
 def save_current_parameters(current_username, j, updated_values):
     current_data = get_user(current_username)
     new_data = current_data.copy()
@@ -140,6 +145,7 @@ def save_current_parameters(current_username, j, updated_values):
     with open("users.csv", "w") as file:
         file.writelines(lines)
 
+# Validate the parameters
 def is_valid_parameters(updated_values, mode):
     error_message = ""
 
