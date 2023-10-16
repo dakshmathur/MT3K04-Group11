@@ -1,10 +1,10 @@
 import re
 import validate_param as v
-from settings import PASSWORD_RULES
+from settings import PASSWORD_RULES, MAX_USER_COUNT
 from tkinter import messagebox
 
 def is_valid(username, password):
-    if get_num_users() < 10:
+    if get_num_users() < MAX_USER_COUNT:
         error_message = ""
         if not username:
             error_message += "Username empty.\n"

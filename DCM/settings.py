@@ -16,6 +16,8 @@ PASSWORD_RULES = {
     'upper_case': r'[A-Z]',
 }
 
+MAX_USER_COUNT = 10
+
 class States(Enum):
     WELCOME = 0
     DASHBOARD = 1
