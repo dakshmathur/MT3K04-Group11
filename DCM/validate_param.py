@@ -1,3 +1,4 @@
+# Validate the LRL value entered by the user
 def validate_lrl(value):
     val = float(value)
     if 30 <= val <= 50 and val % 5 != 0:
@@ -11,6 +12,7 @@ def validate_lrl(value):
     else:
         return False
 
+# Validate the URL value entered by the user
 def validate_url(value):
     val = float(value)
     if 50 <= val <= 175 and val % 5 != 0:
@@ -18,6 +20,7 @@ def validate_url(value):
     else:
         return False
 
+# Validate the Pulse Amplitude value entered by the user
 def validate_pa(value):
     val = float(value)
     if val < 0 or val > 7 or 3.2 < val < 3.5:
@@ -29,6 +32,7 @@ def validate_pa(value):
     else:
         return False
 
+# Validate the Pulse Width value entered by the user
 def validate_pw(value):
     val = float(value)
     if 0.05 > val or val > 1.9:
@@ -36,6 +40,7 @@ def validate_pw(value):
     else:
         return False
     
+# Validate the Refractory Period value entered by the user
 def validate_rp(value):
     val = float(value)
     if val < 150 or val > 500:

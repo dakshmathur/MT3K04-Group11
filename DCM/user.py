@@ -72,8 +72,6 @@ def login(username, password):
         messagebox.showerror("Error", "Invalid entry.")
         return False
 
-#aoo (lrl, url, aa, apw), aai (lrl, url, aa, apw, arp), voo (lrl, url, va, vpw), vvi (lrl, url, va, vpw, vrp)
-
 # Register the user
 def register(username, password):
     with open("users.csv", "a") as file:
