@@ -1,5 +1,4 @@
 def validate_lrl(value):
-    error = ""
     val = float(value)
     if 30 <= val <= 50 and val % 5 != 0:
         return "LRL must be a multiple of 5 between 30ppm and 50ppm.\n"
@@ -13,7 +12,6 @@ def validate_lrl(value):
         return False
 
 def validate_url(value):
-    error = ""
     val = float(value)
     if 50 <= val <= 175 and val % 5 != 0:
         return "URL must be a multiple of 5 between 50ppm and 175ppm.\n"
@@ -21,7 +19,6 @@ def validate_url(value):
         return False
 
 def validate_pa(value):
-    error = ""
     val = float(value)
     if val < 0 or val > 7 or 3.2 < val < 3.5:
         return "Pulse Amplitude must be 0V, 0.5-3.2V or 3.5-7V.\n"
@@ -33,7 +30,6 @@ def validate_pa(value):
         return False
 
 def validate_pw(value):
-    error = ""
     val = float(value)
     if 0.05 > val or val > 1.9:
         return "Pulse Width must be between 0.05ms and 1.9ms.\n"
@@ -41,7 +37,6 @@ def validate_pw(value):
         return False
     
 def validate_rp(value):
-    error = ""
     val = float(value)
     if val < 150 or val > 500:
         return "Refractory Period must be between 150ms and 500ms.\n"
