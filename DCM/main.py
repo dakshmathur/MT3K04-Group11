@@ -10,6 +10,7 @@ from enum import Enum
 connected = False
 new_device = False
 current_user_data = None
+logout_button_pressed = False
 
 # Tkinter setup
 window = tk.Tk()
@@ -199,8 +200,20 @@ def dashboard_state():
     update_parameters()
 
     # Logout button
-    button_logout = tk.Button(frame, text="Logout", command=lambda: change_state(States.WELCOME))
+    button_logout = tk.Button(frame, text="Logout", command=lambda: check_button())
     button_logout.place(relx=0.75, rely=0.4, anchor='center')
+
+#check if the logout button is pressed
+def check_button():
+    global logout_button_pressed
+    if logout_button_pressed:
+        logout_button_pressed = False
+    if not logout_button_pressed:
+        logout_button_pressed = True
+        for widget in frame.winfo_children():
+                widget.destroy()
+        change_state(States.WELCOME)
+        frame2.destroy()
 
 
 # Set the current user data
