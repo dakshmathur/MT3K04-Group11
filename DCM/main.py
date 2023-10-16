@@ -73,6 +73,9 @@ def welcome_state():
         username, password = get_credentials()
         if usr.login(username, password):
 
+            for widget in frame.winfo_children():
+                widget.destroy()
+            
             # Cache the current user as a global variable
             set_current_user(username)
 
@@ -124,7 +127,7 @@ def dashboard_state():
     if connected:
         label_connected = tk.Label(frame, text="Communicating with Device, SN: [Serial Number]", bg="green", fg="white")
     elif not connected:
-        label_connected = tk.Label(frame, text="Not Communicating with Device", bg="#20202A", fg="white")
+        label_connected = tk.Label(frame, text="Not Communicating with Device", bg="red", fg="white")
 
     label_connected.place(relx=0.5, rely=0.05, anchor='center')
 
@@ -132,7 +135,7 @@ def dashboard_state():
     if new_device:
         label_new_device = tk.Label(frame, text="New Device", bg="green", fg="white")
     elif not new_device:
-        label_new_device = tk.Label(frame, text="Not a New Device", bg="#20202A", fg="white")
+        label_new_device = tk.Label(frame, text="Not a New Device", bg="red", fg="white")
     label_new_device.place(relx=0.5, rely=0.1, anchor='center')
 
     def update_parameters():
@@ -198,6 +201,7 @@ def dashboard_state():
     # Logout button
     button_logout = tk.Button(frame, text="Logout", command=lambda: change_state(States.WELCOME))
     button_logout.place(relx=0.75, rely=0.4, anchor='center')
+
 
 # Set the current user data
 def set_current_user(username):
