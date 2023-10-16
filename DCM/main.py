@@ -1,27 +1,31 @@
-import tkinter as tk
-import user as usr
-from settings import MODES, PARAMETERS, PARAMS, States
-from PIL import ImageTk, Image
-
-# Import the enum class for states
-from enum import Enum
+#import required libraries 
+import tkinter as tk                                    #Import tkinter for GUI Construction
+import user as usr                                      #Import user to store user date and parameters
+from settings import MODES, PARAMETERS, PARAMS, States  #Import settings for parameters
+from PIL import ImageTk, Image                          #Import PIL for dynamic image resizing
+from enum import Enum                                   #Import the enum class for states
 
 # Global state variables
-connected = False
-new_device = False
-current_user_data = None
-logout_button_pressed = False
+connected = False                                       #Checks if the device is connected
+new_device = False                                      #Checks if a new device is connected
+current_user_data = None                                
+logout_button_pressed = False                           #checks if the logout button is pressed
 
-# Tkinter setup
+#Setup the master window using tkinter
 window = tk.Tk()
 window.title("Pacemaker Device Controller-Monitor")
 window.geometry("750x450")
 
+#This function renders the backround for the master window
 def render_backround():
+
+    #create a canvas that fills the window
     canvas = tk.Canvas(window)
     canvas.pack(fill="both", expand=True)
     
+    #This function dynamically changes the size of the canvas and frame according to the screen size
     def resize_image(event):
+
         # Get the current window size
         new_width = event.width
         new_height = event.height
@@ -46,16 +50,17 @@ def render_backround():
     # Initially, display the image at the canvas size
     canvas.event_generate("<Configure>")
     
+    #Create frames used for login/displaying parameter values
     frame = tk.Frame(canvas, bg='#20202A')
     frame.place(relx=0.5, rely=0.5, relwidth=0.75, relheight=0.75, anchor='center')
-    
     frame2 = tk.Frame(bg="white")
     frame2.place(in_=frame, anchor='center', relx = .5, rely= .5)
     
+    #return values
     return canvas, frame, frame2 
 
+#call function to render frames and canvas
 canvas, frame, frame2 = render_backround()
-
 
 # Define the current staSte
 current_state = tk.StringVar()
@@ -63,20 +68,25 @@ current_state = tk.StringVar()
 # Define the current state
 current_state = tk.StringVar()
 
-# Define the welcome frame
+#This function define the welcome frame
 def welcome_state():
     
+    #This function returns the username and password entered
     def get_credentials():
         return entry_username.get(), entry_password.get()
 
-    # Login the user
+    #This function logs the user in if the credentials appear in the user file
     def login_user():   
+
         username, password = get_credentials()
+
         if usr.login(username, password):
 
+            #destroy the old widgets in frame 1
             for widget in frame.winfo_children():
                 widget.destroy()
 
+            #place frame 2 which contains parameter values
             frame2.place(in_=frame, anchor='center', relx = .5, rely= .5)
             
             # Cache the current user as a global variable
@@ -124,23 +134,28 @@ def welcome_state():
 
 
 
-# Define the dashboard state 
+#This function deines the dashboard state 
 def dashboard_state():
-    # Connected to device label
+
+    #Connected/not connected device label
     if connected:
         label_connected = tk.Label(frame, text="Communicating with Device, SN: [Serial Number]", bg="green", fg="white")
     elif not connected:
         label_connected = tk.Label(frame, text="Not Communicating with Device", bg="red", fg="white")
 
+    #place label in frame
     label_connected.place(relx=0.5, rely=0.05, anchor='center')
 
-    # New device label
+    #New/old device label
     if new_device:
         label_new_device = tk.Label(frame, text="New Device", bg="green", fg="white")
     elif not new_device:
         label_new_device = tk.Label(frame, text="Not a New Device", bg="red", fg="white")
+
+    #place label in frame
     label_new_device.place(relx=0.5, rely=0.1, anchor='center')
 
+    #This function updates the parameters
     def update_parameters():
         for widget in frame2.winfo_children():
             widget.forget()
@@ -195,22 +210,28 @@ def dashboard_state():
     mode_menu = tk.OptionMenu(frame, mode, *mode_options)
     button_mode = tk.Button(frame, text="Set Mode", command=update_parameters)
 
+    #place the mode and menu
     mode_menu.place(relx=0.25, rely=0.25, anchor='center')
     button_mode.place(relx=0.75, rely=0.25, anchor='center')
 
     # Render the parameters
     update_parameters()
 
-    # Logout button
+    #Logout button if logout button is pressed welcome screen is shown
     button_logout = tk.Button(frame, text="Logout", command=lambda: check_button())
     button_logout.place(relx=0.75, rely=0.4, anchor='center')
 
-''''''
-#check if the logout button is pressed
+
+#This function checks if the logout button is pressed
 def check_button():
+    #decale logout_button_pressed as a global variable
     global logout_button_pressed
+
+    #if logout button is True set to False
     if logout_button_pressed:
         logout_button_pressed = False
+    
+    #if logout button is False set it to True, clear/hide frames, and return to welcome screen
     if not logout_button_pressed:
         logout_button_pressed = True
         for widget in frame.winfo_children():
