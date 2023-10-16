@@ -65,7 +65,7 @@ current_state = tk.StringVar()
 
 # Define the welcome frame
 def welcome_state():
-
+    
     def get_credentials():
         return entry_username.get(), entry_password.get()
 
@@ -76,6 +76,8 @@ def welcome_state():
 
             for widget in frame.winfo_children():
                 widget.destroy()
+
+            frame2.place(in_=frame, anchor='center', relx = .5, rely= .5)
             
             # Cache the current user as a global variable
             set_current_user(username)
@@ -203,6 +205,7 @@ def dashboard_state():
     button_logout = tk.Button(frame, text="Logout", command=lambda: check_button())
     button_logout.place(relx=0.75, rely=0.4, anchor='center')
 
+''''''
 #check if the logout button is pressed
 def check_button():
     global logout_button_pressed
@@ -212,10 +215,9 @@ def check_button():
         logout_button_pressed = True
         for widget in frame.winfo_children():
                 widget.destroy()
+        frame2.place_forget()
         change_state(States.WELCOME)
-        frame2.destroy()
-
-
+        
 # Set the current user data
 def set_current_user(username):
     global current_user_data
