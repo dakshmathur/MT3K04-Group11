@@ -26,7 +26,7 @@ def render_backround():
         new_height = event.height
         
         # Load the background image and resize it to fit the window
-        image = Image.open(r"C:\Users\armin\Desktop\MT3K04-Group11\DCM\backroundFinal.jpg")
+        image = Image.open("backroundFinal.jpg")
         image = image.resize((new_width, new_height), Image.LANCZOS)  # Use ANTIALIAS for better image quality
         img = ImageTk.PhotoImage(image)
         
@@ -47,18 +47,16 @@ def render_backround():
     
     frame = tk.Frame(canvas, bg='#20202A')
     frame.place(relx=0.5, rely=0.5, relwidth=0.75, relheight=0.75, anchor='center')
-
-    frame2 = tk.Frame(canvas, bg='#20202A')
-    frame2.place(relx=0.5, rely=0.5, relwidth=0.75, relheight=0.75, anchor='center')
     
-    return canvas, frame, frame2
-
-canvas,frame2,frame = render_backround()
-
-#frame2 = tk.Frame(window)
-#frame2.pack(pady=5)
+    frame2 = tk.Frame(bg="white")
+    frame2.place(in_=frame, anchor='center', relx = .5, rely= .5)
     
-# Define the current state
+    return canvas, frame, frame2 
+
+canvas, frame, frame2 = render_backround()
+
+
+# Define the current staSte
 current_state = tk.StringVar()
 
 # Define the current state
@@ -126,16 +124,16 @@ def dashboard_state():
     if connected:
         label_connected = tk.Label(frame, text="Communicating with Device, SN: [Serial Number]", bg="green", fg="white")
     elif not connected:
-        label_connected = tk.Label(frame, text="Not Communicating with Device", bg="red", fg="white")
+        label_connected = tk.Label(frame, text="Not Communicating with Device", bg="#20202A", fg="white")
 
-    label_connected.pack(pady=5)
+    label_connected.place(relx=0.5, rely=0.05, anchor='center')
 
     # New device label
     if new_device:
         label_new_device = tk.Label(frame, text="New Device", bg="green", fg="white")
     elif not new_device:
-        label_new_device = tk.Label(frame, text="Not a New Device", bg="red", fg="white")
-    label_new_device.pack(pady=5)
+        label_new_device = tk.Label(frame, text="Not a New Device", bg="#20202A", fg="white")
+    label_new_device.place(relx=0.5, rely=0.1, anchor='center')
 
     def update_parameters():
         for widget in frame2.winfo_children():
@@ -191,15 +189,15 @@ def dashboard_state():
     mode_menu = tk.OptionMenu(frame, mode, *mode_options)
     button_mode = tk.Button(frame, text="Set Mode", command=update_parameters)
 
-    mode_menu.pack(pady=5)
-    button_mode.pack(pady=5)
+    mode_menu.place(relx=0.25, rely=0.25, anchor='center')
+    button_mode.place(relx=0.75, rely=0.25, anchor='center')
 
     # Render the parameters
     update_parameters()
 
     # Logout button
     button_logout = tk.Button(frame, text="Logout", command=lambda: change_state(States.WELCOME))
-    button_logout.pack(pady=5)
+    button_logout.place(relx=0.75, rely=0.4, anchor='center')
 
 # Set the current user data
 def set_current_user(username):
