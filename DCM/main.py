@@ -5,6 +5,12 @@ from settings import MODES, PARAMETERS, PARAMS, States  #Import settings for par
 from PIL import ImageTk, Image                          #Import PIL for dynamic image resizing
 from enum import Enum                                   #Import the enum class for states
 
+
+# Make it an absolute filepath everytime
+import os
+runningDirectory = os.path.dirname(os.path.abspath(__file__)) #pull working directory
+filenameBGFINAL = os.path.join(runningDirectory, 'backroundfinal.jpg') #append backroundfinal.jpg
+
 # Global state variables
 connected = False                                       #Checks if the device is connected
 new_device = False                                      #Checks if a new device is connected
@@ -31,7 +37,7 @@ def render_backround():
         new_height = event.height
         
         # Load the background image and resize it to fit the window
-        image = Image.open("backroundFinal.jpg")
+        image = Image.open(filenameBGFINAL)
         image = image.resize((new_width, new_height), Image.LANCZOS)  # Use ANTIALIAS for better image quality
         img = ImageTk.PhotoImage(image)
         

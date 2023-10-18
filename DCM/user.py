@@ -3,6 +3,11 @@ import validate_param as v
 from settings import PASSWORD_RULES, MAX_USER_COUNT
 from tkinter import messagebox
 
+# Make it an absolute filepath everytime
+import os
+runningDirectory = os.path.dirname(os.path.abspath(__file__)) #pull working directory
+filenameUSERSCSV = os.path.join(runningDirectory, 'users.csv') #append users,csv
+
 def is_valid(username, password):
     if get_num_users() < MAX_USER_COUNT:
         error_message = ""
@@ -32,7 +37,7 @@ def is_valid(username, password):
 
 # Is the user an existing user?
 def is_existing_user(username):
-    with open("users.csv", "r") as file:
+    with open(filenameUSERSCSV, "r") as file:
         lines = file.readlines()
     for line in lines:
         data = line.split(",")
@@ -43,7 +48,7 @@ def is_existing_user(username):
 
 # Get the number of users in the file   
 def get_num_users():
-    with open("users.csv", "r") as file:
+    with open(filenameUSERSCSV, "r") as file:
         lines = file.readlines()
     return len(lines)
     
@@ -54,7 +59,7 @@ def login(username, password):
     def validate_credentials(username, password):
 
         # Read the file and check if the username and password match
-        with open("users.csv", "r") as file:
+        with open(filenameUSERSCSV, "r") as file:
                 lines = file.readlines()
         for line in lines:
             data = line.split(",")
@@ -74,7 +79,7 @@ def login(username, password):
 
 # Register the user
 def register(username, password):
-    with open("users.csv", "a") as file:
+    with open(filenameUSERSCSV, "a") as file:
         file.write(f"{username},{password},AOO,")
         file.write(f"60,120,3.5,0.4,")
         file.write(f"60,120,3.5,0.4,250,")
@@ -85,7 +90,7 @@ def register(username, password):
 
 # Get the current mode of the user
 def get_current_mode(username):
-    with open("users.csv", "r") as file:
+    with open(filenameUSERSCSV, "r") as file:
         lines = file.readlines()
     for line in lines:
         data = line.split(",")
@@ -96,7 +101,7 @@ def get_current_mode(username):
 
 # Save the current mode of the user to the csv database
 def save_current_mode(current_username, mode):
-    with open("users.csv", "r") as file:
+    with open(filenameUSERSCSV, "r") as file:
         lines = file.readlines()
     for line in lines:
         data = line.split(",")
@@ -105,12 +110,12 @@ def save_current_mode(current_username, mode):
             data[2] = mode
             lines[lines.index(line)] = ",".join(data)
             break
-    with open("users.csv", "w") as file:
+    with open(filenameUSERSCSV, "w") as file:
         file.writelines(lines)
 
 # Get the current user's data
 def get_user(username):
-    with open("users.csv", "r") as file:
+    with open(filenameUSERSCSV, "r") as file:
         lines = file.readlines()
     for line in lines:
         data = line.split(",")
@@ -131,7 +136,7 @@ def save_current_parameters(current_username, j, updated_values):
         new_data[i] = updated_values[l]
         l += 1
 
-    with open("users.csv", "r") as file:
+    with open(filenameUSERSCSV, "r") as file:
         lines = file.readlines()
     for line in lines:
         data = line.split(",")
@@ -140,7 +145,7 @@ def save_current_parameters(current_username, j, updated_values):
             lines[lines.index(line)] = ",".join(new_data)
             break
 
-    with open("users.csv", "w") as file:
+    with open(filenameUSERSCSV, "w") as file:
         file.writelines(lines)
 
 # Validate the parameters
