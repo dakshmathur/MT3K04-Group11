@@ -4,18 +4,61 @@ import user as usr                                      #Import user to store us
 from settings import MODES, PARAMETERS, PARAMS, States  #Import settings for parameters
 from PIL import ImageTk, Image                          #Import PIL for dynamic image resizing
 from enum import Enum                                   #Import the enum class for states
+import os                                               #Import os for the absolute file math
 
-
-# Make it an absolute filepath everytime
-import os
-runningDirectory = os.path.dirname(os.path.abspath(__file__)) #pull working directory
-filenameBGFINAL = os.path.join(runningDirectory, 'backroundfinal.jpg') #append backroundfinal.jpg
+import wmi                                              #Import Windows Management Instrumentation for checking windows usb connections
+import io                                               #Import input output
+from contextlib import redirect_stdout                  #Import redirect_stdout 
+import re                                               #Import regex
 
 # Global state variables
 connected = False                                       #Checks if the device is connected
 new_device = False                                      #Checks if a new device is connected
 current_user_data = None                                
 logout_button_pressed = False                           #checks if the logout button is pressed
+
+##CHECK IF BOARD IS CONNECTED
+#Initialize a WMI connection
+c = wmi.WMI()
+
+# Initialize a variable to store the output
+captured_output = io.StringIO()
+
+# Redirect the standard output to the captured_output variable
+with redirect_stdout(captured_output):
+    for item in c.Win32_PhysicalMedia():
+        print(item)
+    for drive in c.Win32_DiskDrive():
+        print(drive)
+    for disk in c.Win32_LogicalDisk():
+        print(disk)
+
+# Get the captured output as a string
+output_text = captured_output.getvalue()
+
+# Define the regular expression pattern to match the serial number string
+pattern = r'\b[0-9A-Fa-f]{8}&\d&\d{12}\b'
+
+# Search for the pattern in the text
+match = re.search(pattern, output_text)
+
+# save output to variable
+global extracted_string
+extracted_string = ""
+
+# Check if a match was found and extract the desired string
+if match:
+    extracted_string = match.group(0)
+
+# If connected, change connected variable
+if "SEGGER" in output_text:
+    connected = True
+else:
+    connected = False
+
+# Make local files an absolute filepath everytime
+runningDirectory = os.path.dirname(os.path.abspath(__file__))           #Pull current working directory
+filenameBGFINAL = os.path.join(runningDirectory, 'backroundfinal.jpg')  #Append backroundfinal.jpg
 
 #Setup the master window using tkinter
 window = tk.Tk()
@@ -145,7 +188,8 @@ def dashboard_state():
 
     #Connected/not connected device label
     if connected:
-        label_connected = tk.Label(frame, text="Communicating with Device, SN: [Serial Number]", bg="green", fg="white")
+        serial_number = extracted_string
+        label_connected = tk.Label(frame, text=f"Communicating with Device, SN: {serial_number}", bg="green", fg="white")
     elif not connected:
         label_connected = tk.Label(frame, text="Not Communicating with Device", bg="red", fg="white")
 
@@ -159,7 +203,7 @@ def dashboard_state():
         label_new_device = tk.Label(frame, text="Not a New Device", bg="red", fg="white")
 
     #place label in frame
-    label_new_device.place(relx=0.5, rely=0.1, anchor='center')
+    label_new_device.place(relx=0.5, rely=0.15, anchor='center')
 
     #This function updates the parameters
     def update_parameters():
