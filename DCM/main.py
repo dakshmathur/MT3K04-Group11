@@ -1,7 +1,7 @@
 #import required libraries 
 import tkinter as tk                                                    #Import tkinter for GUI Construction
 import user as usr                                                      #Import user to store user date and parameters
-from settings import MODES, PARAMETERS, PARAMS, States, DATABASE_DIR    #Import settings for parameters
+from settings import States, DATABASE_DIR                               #Import settings for parameters
 from PIL import ImageTk, Image                                          #Import PIL for dynamic image resizing
 from enum import Enum                                                   #Import the enum class for states
 import os                                                               #Import os for the absolute file math
@@ -18,7 +18,7 @@ connected = False                                       #Checks if the device is
 new_device = False                                      #Checks if a new device is connected
 logout_button_pressed = False                           #checks if the logout button is pressed
 
-current_user_data = None                                #Stores the current user data
+current_user_id = None                                  #Stores the current user data
 
 ##CHECK IF BOARD IS CONNECTED
 #Initialize a WMI connection
@@ -76,6 +76,7 @@ cursor = connector.cursor()
 try:
     db.createDB()
 except:
+    print("Database already exists")
     pass
 
 #This function renders the backround for the master window
@@ -138,7 +139,7 @@ def welcome_state():
         return entry_username.get(), entry_password.get()
 
     #This function logs the user in if the credentials appear in the user file
-    def login_user():   
+    def login_user():
 
         # Get the username and password
         username, password = get_credentials()
@@ -153,7 +154,8 @@ def welcome_state():
             frame2.place(in_=frame, anchor='center', relx = .5, rely= .5)
             
             # Cache the current user as a global variable
-            set_current_user(username)
+            global current_user_id
+            current_user_id = db.get_user_id(username)
 
             # Change the state to dashboard
             change_state(States.DASHBOARD)
@@ -192,64 +194,61 @@ def welcome_state():
     button_register.place(relx=0.58, rely=0.65, anchor='center')
 
     # Version num/instatution
-    label_version = tk.Label(frame, text="Version 0.1.0\tMcMaster University", bg='#20202A', fg='white')
+    label_version = tk.Label(frame, text="Version 0.1.1\tMcMaster University", bg='#20202A', fg='white')
     label_version.place(relx=0.5, rely=0.95, anchor='center')
 
-
-
-#This function deines the dashboard state 
+# This function deines the dashboard state 
 def dashboard_state():
 
-    #Connected/not connected device label
+    # Connected/not connected device label
     if connected:
         serial_number = extracted_string
         label_connected = tk.Label(frame, text=f"Communicating with Device, SN: {serial_number}", bg="green", fg="white")
     elif not connected:
         label_connected = tk.Label(frame, text="Not Communicating with Device", bg="red", fg="white")
 
-    #place label in frame
+    # Place label in frame
     label_connected.place(relx=0.5, rely=0.05, anchor='center')
 
-    #New/old device label
+    # New/old device label
     if new_device:
         label_new_device = tk.Label(frame, text="New Device", bg="green", fg="white")
     elif not new_device:
         label_new_device = tk.Label(frame, text="Not a New Device", bg="red", fg="white")
 
-    #place label in frame
+    # Place label in frame
     label_new_device.place(relx=0.5, rely=0.15, anchor='center')
 
-    #This function updates the parameters
+    # This function updates the parameters
     def update_parameters():
         for widget in frame2.winfo_children():
             widget.forget()
 
-        usr.save_current_mode(current_user_data[0], mode.get())
-
-        # Get the current mode
-        j = MODES.index(mode.get())
-
-        # Get the csv data offset for the current mode in the database
-        k = 1 if (j > 1) else 2 if (j > 2) else 0
-        l = 0
+        # Update the database with the new mode
+        db.update_mode(current_user_id, mode.get().lower())
 
         entry_values = []
 
-        # Create the parameter labels and entry boxes for the current mode 
-        for i in range(len(PARAMETERS)):
-            if PARAMS[j][i]:
-                label_parameter = tk.Label(frame2, text=PARAMETERS[i])
+        # Create the parameter labels and entry boxes for the current mode
+        mode_parameters = db.get_mode_parameters(current_user_id)
 
-                entry_value = tk.StringVar()
-                entry = tk.Entry(frame2, textvariable=entry_value)
-                entry.insert(0, current_user_data[j*4+3+k+l])
+        for i in range(len(mode_parameters)):
+            label_parameter = tk.Label(frame2, text=mode_parameters[i])
 
-                label_parameter.pack()
-                entry.pack()
+            entry_value = tk.StringVar()
+            entry = tk.Entry(frame2, textvariable=entry_value)
 
-                l += 1
+            data = db.lookup_parameter_value(current_user_id, mode.get().lower(), mode_parameters[i])
+            print(data)
+            try:
+                entry.insert(0, data)
+            except:
+                pass
 
-                entry_values.append(entry_value)
+            label_parameter.pack()
+            entry.pack()
+
+            entry_values.append(entry_value)
 
         # Submit button
         button_submit = tk.Button(frame2, text="Submit", command=lambda: submit_parameters(entry_values))
@@ -263,25 +262,23 @@ def dashboard_state():
 
         # Check if the values are valid
         if (usr.is_valid_parameters(updated_values, mode.get())):
-
-            # Update the parameters in the database
-            usr.save_current_parameters(current_user_data[0], MODES.index(mode.get()), updated_values)
+            db.update_mode_parameters(current_user_id, mode.get().lower(), updated_values)
 
     # Mode select
     mode = tk.StringVar(frame)
-    mode_options = MODES
-    mode.set(usr.get_current_mode(current_user_data[0]))
+    mode_options = db.get_all_modes()
+    mode.set(db.get_mode(current_user_id).upper())
     mode_menu = tk.OptionMenu(frame, mode, *mode_options)
     button_mode = tk.Button(frame, text="Set Mode", command=update_parameters)
 
-    #place the mode and menu
+    # Place the mode and menu
     mode_menu.place(relx=0.25, rely=0.25, anchor='center')
     button_mode.place(relx=0.75, rely=0.25, anchor='center')
 
     # Render the parameters
     update_parameters()
 
-    #Logout button if logout button is pressed welcome screen is shown
+    # Logout button if logout button is pressed welcome screen is shown
     button_logout = tk.Button(frame, text="Logout", command=lambda: check_button())
     button_logout.place(relx=0.75, rely=0.4, anchor='center')
 
@@ -302,11 +299,6 @@ def check_button():
                 widget.destroy()
         frame2.place_forget()
         change_state(States.WELCOME)
-        
-# Set the current user data
-def set_current_user(username):
-    global current_user_data
-    current_user_data = usr.get_user(username)
 
 # Define the clear entire window
 def clear_frame(fr):
