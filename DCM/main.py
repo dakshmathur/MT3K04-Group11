@@ -1,21 +1,24 @@
 #import required libraries 
-import tkinter as tk                                    #Import tkinter for GUI Construction
-import user as usr                                      #Import user to store user date and parameters
-from settings import MODES, PARAMETERS, PARAMS, States  #Import settings for parameters
-from PIL import ImageTk, Image                          #Import PIL for dynamic image resizing
-from enum import Enum                                   #Import the enum class for states
-import os                                               #Import os for the absolute file math
+import tkinter as tk                                                    #Import tkinter for GUI Construction
+import user as usr                                                      #Import user to store user date and parameters
+from settings import MODES, PARAMETERS, PARAMS, States, DATABASE_DIR    #Import settings for parameters
+from PIL import ImageTk, Image                                          #Import PIL for dynamic image resizing
+from enum import Enum                                                   #Import the enum class for states
+import os                                                               #Import os for the absolute file math
+import database as db                                                   #Import database module for database management
 
 import wmi                                              #Import Windows Management Instrumentation for checking windows usb connections
 import io                                               #Import input output
 from contextlib import redirect_stdout                  #Import redirect_stdout 
 import re                                               #Import regex
+import sqlite3                                          #Import sqlite3 for database management
 
 # Global state variables
 connected = False                                       #Checks if the device is connected
 new_device = False                                      #Checks if a new device is connected
-current_user_data = None                                
 logout_button_pressed = False                           #checks if the logout button is pressed
+
+current_user_data = None                                #Stores the current user data
 
 ##CHECK IF BOARD IS CONNECTED
 #Initialize a WMI connection
@@ -64,6 +67,16 @@ filenameBGFINAL = os.path.join(runningDirectory, 'backroundfinal.jpg')  #Append 
 window = tk.Tk()
 window.title("Pacemaker Device Controller-Monitor")
 window.geometry("750x450")
+
+#Setup the database for storing data
+connector = sqlite3.connect(DATABASE_DIR)
+cursor = connector.cursor()
+
+#This function creates the database if it does not exist
+try:
+    db.createDB()
+except:
+    pass
 
 #This function renders the backround for the master window
 def render_backround():
@@ -127,6 +140,7 @@ def welcome_state():
     #This function logs the user in if the credentials appear in the user file
     def login_user():   
 
+        # Get the username and password
         username, password = get_credentials()
 
         if usr.login(username, password):

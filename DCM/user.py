@@ -1,6 +1,6 @@
 import re
 import validate_param as v
-from settings import PASSWORD_RULES, MAX_USER_COUNT
+from settings import PASSWORD_RULES, MAX_USER_COUNT, DATABASE_DIR
 from tkinter import messagebox
 
 # Make it an absolute filepath everytime
@@ -57,6 +57,8 @@ def login(username, password):
 
     # Validate the credentials
     def validate_credentials(username, password):
+
+        # Check if the username and password are valid
 
         # Read the file and check if the username and password match
         with open(filenameUSERSCSV, "r") as file:

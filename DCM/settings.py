@@ -18,6 +18,8 @@ PASSWORD_RULES = {
 
 MAX_USER_COUNT = 10
 
+DATABASE_DIR = "DCM\\data.db"
+
 class States(Enum):
     WELCOME = 0
     DASHBOARD = 1
