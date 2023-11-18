@@ -1,5 +1,4 @@
 import re
-import validate_param as v
 from settings import PASSWORD_RULES, MAX_USER_COUNT, DATABASE_DIR
 from tkinter import messagebox
 import database as db
@@ -63,43 +62,3 @@ def login(username, password):
 def register(username, password):
     if db.create_user(username, password):
         messagebox.showinfo("Success", "User registered successfully, please login.")
-
-# Validate the parameters
-def is_valid_parameters(updated_values, mode):
-    error_message = ""
-
-    LRL = v.validate_lrl(updated_values[0])
-    if LRL != False:
-            error_message += LRL
-
-    URL = v.validate_url(updated_values[1])
-    if URL != False:
-            error_message += URL
-
-    if mode == "AOO" or mode == "AAI":
-        AA = v.validate_pa(updated_values[2])
-        if AA != False:
-            error_message += AA
-
-        APW = v.validate_pw(updated_values[3])
-        if APW != False:
-            error_message += APW
-    if mode == "VOO" or mode == "VVI":
-        VA = v.validate_pa(updated_values[2])
-        if VA != False:
-            error_message += VA
-
-        VPW = v.validate_pw(updated_values[3])
-        if VPW != False:
-            error_message += VPW
-
-    if mode == "AAI" or mode == "VVI":
-        RP = v.validate_rp(updated_values[4])
-        if RP != False:
-            error_message += RP
-
-    if error_message != "":
-        messagebox.showerror("Error", error_message)
-        return False
-    else:
-        return True

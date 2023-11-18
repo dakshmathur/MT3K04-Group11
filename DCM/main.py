@@ -1,6 +1,7 @@
 #import required libraries 
 import tkinter as tk                                                    #Import tkinter for GUI Construction
 import user as usr                                                      #Import user to store user date and parameters
+import validate_param as vp                                             #Import validate_param to validate parameters
 from settings import States, DATABASE_DIR                               #Import settings for parameters
 from PIL import ImageTk, Image                                          #Import PIL for dynamic image resizing
 from enum import Enum                                                   #Import the enum class for states
@@ -219,6 +220,17 @@ def dashboard_state():
     # Place label in frame
     label_new_device.place(relx=0.5, rely=0.15, anchor='center')
 
+    # Submit the parameters
+    def submit_parameters(entry_values):
+
+        # Update the values
+        updated_values = {key: val.get() for key, val in entry_values.items()}
+        print(updated_values)
+
+        # Check if the values are valid
+        if (vp.is_valid_parameters(updated_values, mode.get())):
+            db.update_mode_parameters(current_user_id, mode.get(), updated_values)
+
     # This function updates the parameters
     def update_parameters():
         for widget in frame2.winfo_children():
@@ -227,19 +239,19 @@ def dashboard_state():
         # Update the database with the new mode
         db.update_mode(current_user_id, mode.get().lower())
 
-        entry_values = []
+        entry_values = {}
 
         # Create the parameter labels and entry boxes for the current mode
         mode_parameters = db.get_mode_parameters(current_user_id)
+        print(mode_parameters)
 
-        for i in range(len(mode_parameters)):
-            label_parameter = tk.Label(frame2, text=mode_parameters[i])
+        for key in mode_parameters:
+            label_parameter = tk.Label(frame2, text=key)          
 
             entry_value = tk.StringVar()
             entry = tk.Entry(frame2, textvariable=entry_value)
 
-            data = db.lookup_parameter_value(current_user_id, mode.get().lower(), mode_parameters[i])
-            print(data)
+            data = mode_parameters[key]
             try:
                 entry.insert(0, data)
             except:
@@ -248,21 +260,28 @@ def dashboard_state():
             label_parameter.pack()
             entry.pack()
 
-            entry_values.append(entry_value)
+            entry_values[key] = entry_value
 
         # Submit button
         button_submit = tk.Button(frame2, text="Submit", command=lambda: submit_parameters(entry_values))
         button_submit.pack()
 
-    # Submit the parameters
-    def submit_parameters(values_list):
+    #This function checks if the logout button is pressed
+    def check_button():
+        #decale logout_button_pressed as a global variable
+        global logout_button_pressed
 
-        # Update the values
-        updated_values = [val.get() for val in values_list]
-
-        # Check if the values are valid
-        if (usr.is_valid_parameters(updated_values, mode.get())):
-            db.update_mode_parameters(current_user_id, mode.get().lower(), updated_values)
+        #if logout button is True set to False
+        if logout_button_pressed:
+            logout_button_pressed = False
+        
+        #if logout button is False set it to True, clear/hide frames, and return to welcome screen
+        if not logout_button_pressed:
+            logout_button_pressed = True
+            for widget in frame.winfo_children():
+                    widget.destroy()
+            frame2.place_forget()
+            change_state(States.WELCOME)
 
     # Mode select
     mode = tk.StringVar(frame)
@@ -281,24 +300,6 @@ def dashboard_state():
     # Logout button if logout button is pressed welcome screen is shown
     button_logout = tk.Button(frame, text="Logout", command=lambda: check_button())
     button_logout.place(relx=0.75, rely=0.4, anchor='center')
-
-
-#This function checks if the logout button is pressed
-def check_button():
-    #decale logout_button_pressed as a global variable
-    global logout_button_pressed
-
-    #if logout button is True set to False
-    if logout_button_pressed:
-        logout_button_pressed = False
-    
-    #if logout button is False set it to True, clear/hide frames, and return to welcome screen
-    if not logout_button_pressed:
-        logout_button_pressed = True
-        for widget in frame.winfo_children():
-                widget.destroy()
-        frame2.place_forget()
-        change_state(States.WELCOME)
 
 # Define the clear entire window
 def clear_frame(fr):

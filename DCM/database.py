@@ -10,7 +10,7 @@ def createDB():
             id NUMBER PRIMARY KEY,
             lower_rate_limit NUMBER,
             upper_rate_limit NUMBER,
-            atrial_amplitutde NUMBER,
+            atrial_amplitude NUMBER,
             atrial_pulse_width NUMBER
         );              
     """)
@@ -20,12 +20,12 @@ def createDB():
             id NUMBER PRIMARY KEY,
             lower_rate_limit NUMBER,
             upper_rate_limit NUMBER,
-            atrial_amplitutde NUMBER,
+            atrial_amplitude NUMBER,
             atrial_pulse_width NUMBER,
             atrial_sensitivity NUMBER,
             arp NUMBER,
             pvarp NUMBER,
-            hysterisis NUMBER,
+            hysteresis NUMBER,
             rate_smoothing NUMBER
         );
     """)
@@ -86,7 +86,7 @@ def create_user(username, password):
             id, 
             lower_rate_limit, 
             upper_rate_limit, 
-            atrial_amplitutde, 
+            atrial_amplitude, 
             atrial_pulse_width
         ) 
         VALUES (?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4))
@@ -96,12 +96,12 @@ def create_user(username, password):
             id,
             lower_rate_limit,
             upper_rate_limit,
-            atrial_amplitutde,
+            atrial_amplitude,
             atrial_pulse_width,
             atrial_sensitivity,
             arp,
             pvarp,
-            hysterisis,
+            hysteresis,
             rate_smoothing
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4,0.75,250,250,0,0)
@@ -154,22 +154,69 @@ def get_mode(id):
     cursor.execute("SELECT current_mode FROM users WHERE id = ?", (id,))
     return cursor.fetchone()[0]
 
-def get_mode_parameters(id):
-    mode = get_mode(id)
-    cursor.execute("SELECT * FROM " + mode + " WHERE id = ?", (id,))
-    working_list = [description[0] for description in cursor.description][1:]
-    for i in range(len(working_list)):
-        working_list[i] = working_list[i].replace("_", " ").title()
-    return working_list
-
 def lookup_parameter_value(id, mode, parameter):
     cursor.execute("SELECT " + parameter.lower().replace(" ", "_") + " FROM " + mode + " WHERE id = ?", (id,))
     return cursor.fetchone()[0]
+    
+# return a dictionary of the parameters for the current mode of the user and the values for those parameters in the database
+def get_mode_parameters(id):
+    mode_parameters = {}
+    mode = get_mode(id)
+
+    cursor.execute("SELECT * FROM " + mode + " WHERE id = ?", (id,))
+    working_list = [description[0] for description in cursor.description][1:]
+
+    for i in range(len(working_list)):
+        working_list[i] = working_list[i].replace("_", " ").title()
+
+        if working_list[i][-2:] == "rp":
+            working_list[i] = working_list[i].upper()
+
+        mode_parameters[working_list[i]] = lookup_parameter_value(id, mode, working_list[i])
+
+    return mode_parameters
 
 def update_mode_parameters(id, mode, updated_values):
-    cursor.execute("UPDATE " + mode + " SET lower_rate_limit = ?, upper_rate_limit = ?, atrial_amplitutde = ?, atrial_pulse_width = ?, atrial_sensitivity = ?, arp = ?, pvarp = ?, hysterisis = ?, rate_smoothing = ?, ventricular_amplitude = ?, ventricular_pulse_width = ?, ventricular_sensitivity = ?, vrp = ?, hysteresis = ?, rate_smoothing = ? WHERE id = ?", (updated_values[0], updated_values[1], updated_values[2], updated_values[3], updated_values[4], updated_values[5], updated_values[6], updated_values[7], updated_values[8], updated_values[9], updated_values[10], updated_values[11], updated_values[12], updated_values[13], updated_values[14], id))
-    connect.commit()
+    print(updated_values)
+    try:
+        columns_map = {
+            'AOO': ['lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width'],
+            'AAI': ['lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'atrial_sensitivity', 'arp', 'pvarp', 'hysteresis', 'rate_smoothing'],
+            'VOO': ['lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width'],
+            'VVI': ['lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'hysteresis', 'rate_smoothing'],
+            # Add mappings for other modes
+        }
+
+        def transform_column_name(col):
+            if col in ['arp', 'vrp', 'pvarp']:
+                return col.upper()
+            else:
+                return col.replace('_', ' ').title()
+
+        # Select the columns for the current mode
+        columns = columns_map.get(mode, [])
+        if not columns:
+            print(f"No column mapping found for mode: {mode}")
+
+        # Construct the SQL query dynamically
+        set_clause = ', '.join([f"{col} = ?" for col in columns])
+        sql_query = f"UPDATE {mode.lower()} SET {set_clause} WHERE id = ?"
+
+        # Prepare the values for the SQL query
+        values = [updated_values.get(transform_column_name(column), None) for column in columns]
+        values.append(id)  # Append the user ID at the end
+        print(values)
+
+        # Execute the query
+        cursor.execute(sql_query, values)
+        connect.commit()
+    except Exception as e:
+        # Handle any exceptions (e.g., log them, inform the user)
+        print(f"Error updating mode parameters: {e}")
+
 
 def get_all_modes():
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'users'")
     return [mode[0].upper() for mode in cursor.fetchall()]
+
+
