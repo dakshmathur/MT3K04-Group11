@@ -2,46 +2,27 @@ from tkinter import messagebox
 
 # Validate the parameters
 def is_valid_parameters(updated_values, mode):
-    print(updated_values)
     error_message = ""
 
     # Access values by their keys
-    LRL = validate_lrl(updated_values['Lower Rate Limit'])
+    LRL = validate_lrl(updated_values['LOWER RATE LIMIT'])
     if LRL != False:
             error_message += LRL
 
-    URL = validate_url(updated_values['Upper Rate Limit'])
+    URL = validate_url(updated_values['UPPER RATE LIMIT'])
     if URL != False:
             error_message += URL
 
-    if mode == "AOO":
-        AA = validate_pa(updated_values['Atrial Amplitude'])
+    if mode == "AAT":
+        AA = validate_pa(updated_values['ATRIAL AMPLITUDE'])
         if AA != False:
             error_message += AA
 
-        APW = validate_pw(updated_values['Atrial Pulse Width'])
-        if APW != False:
-            error_message += APW
-        
-    if mode == "VOO":
-        VA = validate_pa(updated_values['Ventricular Amplitude'])
-        if VA != False:
-            error_message += VA
-
-        VPW = validate_pw(updated_values['Ventricular Pulse Width'])
-        if VPW != False:
-            error_message += VPW
-
-    if mode == "AAI":
-        AA = validate_pa(updated_values['Atrial Amplitude'])
-        if AA != False:
-            error_message += AA
-
-        APW = validate_pw(updated_values['Atrial Pulse Width'])
+        APW = validate_pw(updated_values['ATRIAL PULSE WIDTH'])
         if APW != False:
             error_message += APW
 
-        AS = validate_sen(updated_values['Atrial Sensitivity'])
+        AS = validate_sen(updated_values['ATRIAL SENSITIVITY'])
         if AS != False:
             error_message += AS
 
@@ -53,20 +34,16 @@ def is_valid_parameters(updated_values, mode):
         if PVARP != False:
             error_message += PVARP
 
-        HYS = validate_hys(updated_values['Hysteresis'])
-        if HYS != False:
-            error_message += HYS
-        
-    if mode == "VVI":
-        VA = validate_pa(updated_values['Ventricular Amplitude'])
+    if mode == "VVT":
+        VA = validate_pa(updated_values['VENTRICULAR AMPLITUDE'])
         if VA != False:
             error_message += VA
 
-        VPW = validate_pw(updated_values['Ventricular Pulse Width'])
+        VPW = validate_pw(updated_values['VENTRICULAR PULSE WIDTH'])
         if VPW != False:
             error_message += VPW
 
-        VS = validate_sen(updated_values['Ventricular Sensitivity'])
+        VS = validate_sen(updated_values['VENTRICULAR SENSITIVITY'])
         if VS != False:
             error_message += VS
 
@@ -74,9 +51,102 @@ def is_valid_parameters(updated_values, mode):
         if VRP != False:
             error_message += VRP
 
-        HYS = validate_hys(updated_values['Hysteresis'])
+    if mode == "AOO":
+        AA = validate_pa(updated_values['ATRIAL AMPLITUDE'])
+        if AA != False:
+            error_message += AA
+
+        APW = validate_pw(updated_values['ATRIAL PULSE WIDTH'])
+        if APW != False:
+            error_message += APW
+        
+    if mode == "VOO":
+        VA = validate_pa(updated_values['VENTRICULAR AMPLITUDE'])
+        if VA != False:
+            error_message += VA
+
+        VPW = validate_pw(updated_values['VENTRICULAR PULSE WIDTH'])
+        if VPW != False:
+            error_message += VPW
+
+    if mode == "AAI":
+        AA = validate_pa(updated_values['ATRIAL AMPLITUDE'])
+        if AA != False:
+            error_message += AA
+
+        APW = validate_pw(updated_values['ATRIAL PULSE WIDTH'])
+        if APW != False:
+            error_message += APW
+
+        AS = validate_sen(updated_values['ATRIAL SENSITIVITY'])
+        if AS != False:
+            error_message += AS
+
+        ARP = validate_rp(updated_values['ARP'])
+        if ARP != False:
+            error_message += ARP
+
+        PVARP = validate_pvarp(updated_values['PVARP'])
+        if PVARP != False:
+            error_message += PVARP
+
+        HYS = validate_hys(updated_values['HYSTERESIS'])
         if HYS != False:
             error_message += HYS
+        
+    if mode == "VVI":
+        VA = validate_pa(updated_values['VENTRICULAR AMPLITUDE'])
+        if VA != False:
+            error_message += VA
+
+        VPW = validate_pw(updated_values['VENTRICULAR PULSE WIDTH'])
+        if VPW != False:
+            error_message += VPW
+
+        VS = validate_sen(updated_values['VENTRICULAR SENSITIVITY'])
+        if VS != False:
+            error_message += VS
+
+        VRP = validate_rp(updated_values['VRP'])
+        if VRP != False:
+            error_message += VRP
+
+        HYS = validate_hys(updated_values['HYSTERESIS'])
+        if HYS != False:
+            error_message += HYS
+
+    if mode == "VDD":
+        FAVD = validate_favd(updated_values['FIXED AV DELAY'])
+        if FAVD != False:
+            error_message += FAVD
+
+        VA = validate_pa(updated_values['VENTRICULAR AMPLITUDE'])
+        if VA != False:
+            error_message += VA
+
+        VPW = validate_pw(updated_values['VENTRICULAR PULSE WIDTH'])
+        if VPW != False:
+            error_message += VPW
+        
+        VS = validate_sen(updated_values['VENTRICULAR SENSITIVITY'])
+        if VS != False:
+            error_message += VS
+
+        VRP = validate_rp(updated_values['VRP'])
+        if VRP != False:
+            error_message += VRP
+
+        PVARP_EXT = validate_pvarp_ext(updated_values['PVARP EXTENSION'])
+        if PVARP_EXT != False:
+            error_message += PVARP_EXT
+
+        ATRD = validate_atrd(updated_values['ATR DURATION'])
+        if ATRD != False:
+            error_message += ATRD
+
+        ATRFT = validate_atrft(updated_values['ATR FALLBACK TIME'])
+        if ATRFT != False:
+            error_message += ATRFT
 
     if error_message != "":
         messagebox.showerror("Error", error_message)
@@ -84,6 +154,7 @@ def is_valid_parameters(updated_values, mode):
     else:
         messagebox.showinfo("Success", "Parameters Updated.")
         return True
+
 
 # Validate the LRL value entered by the user
 def validate_lrl(value):
@@ -175,6 +246,20 @@ def validate_pvarp(value):
     else:
         return False
     
+# Validate PVARP Extension value entered by the user
+def validate_pvarp_ext(value):
+    try:
+        val = float(value)
+    except ValueError:
+        return "PVARP Extension must be a number.\n"
+    
+    if (val < 0) or ((val > 0) and (val < 50)) or (val > 400):
+        return "PVARP Extension must be 0ms or between 50 and 400ms.\n"
+    elif (val % 10 != 0):
+        return "PVARP Extension must be a multiple of 10ms between 50ms and 400ms.\n"
+    else:
+        return False
+    
 # Validate the Sensitivity value entered by the user
 def validate_sen(value):
     try:
@@ -206,5 +291,49 @@ def validate_hys(value):
         return "Hysteresis must be a multiple of 5 between 90ms and 175ms.\n"
     elif (val < 30) or (val > 175):
         return "Hysteresis must be between 30ms and 175ms.\n"
+    else:
+        return False
+    
+# Validate the Fixed AV Delay value entered by the user
+def validate_favd(value):
+    try:
+        val = float(value)
+    except ValueError:
+        return "Fixed AV Delay must be a number.\n"
+    
+    if (val < 70) or (val > 300):
+        return "Fixed AV Delay must be between 70ms and 300ms.\n"
+    elif (val % 10 != 0):
+        return "Fixed AV Delay must be a multiple of 10ms between 70ms and 300ms.\n"
+    else:
+        return False
+    
+# Validate ATR Duration value entered by the user
+def validate_atrd(value):
+    try:
+        val = float(value)
+    except ValueError:
+        return "ATR Duration must be a number.\n"
+    
+    if not ((val == 10) or ((val >= 20) and (val <= 80)) or ((val >= 100) and (val <= 2000))):
+        return "ATR Duration must be 10ms, in the range of 20-80ms or in the range of 100-2000ms.\n"
+    elif ((val >= 20) and (val <= 80) and (val % 20 != 0)):
+        return "ATR Duration must be a multiple of 20ms between 20ms and 80ms.\n"
+    elif ((val >= 100) and (val <= 2000) and (val % 100 != 0)):
+        return "ATR Duration must be a multiple of 100ms between 100ms and 2000ms.\n"
+    else:
+        return False
+
+# Validate the ATR Fallback Time value entered by the user
+def validate_atrft(value):
+    try:
+        val = float(value)
+    except ValueError:
+        return "ATR Fallback Time must be a number.\n"
+    
+    if (val < 1 or val > 5):
+        return "ATR Fallback Time must be between 1 and 5 minutes.\n"
+    elif (val % 1 != 0):
+        return "ATR Fallback Time must be a multiple of 1 minute between 1 and 5 minutes.\n"
     else:
         return False

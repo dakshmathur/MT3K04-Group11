@@ -6,6 +6,31 @@ cursor = connect.cursor()
 
 def createDB():
     cursor.execute("""
+        CREATE TABLE aat (
+            id NUMBER PRIMARY KEY,
+            lower_rate_limit NUMBER,
+            upper_rate_limit NUMBER,
+            atrial_amplitude NUMBER,
+            atrial_pulse_width NUMBER,
+            atrial_sensitivity NUMBER,
+            arp NUMBER,
+            pvarp NUMBER
+        );
+    """)
+
+    cursor.execute("""
+        CREATE TABLE vvt (
+            id NUMBER PRIMARY KEY,
+            lower_rate_limit NUMBER,
+            upper_rate_limit NUMBER,
+            ventricular_amplitude NUMBER,
+            ventricular_pulse_width NUMBER,
+            ventricular_sensitivity NUMBER,
+            vrp NUMBER
+        );
+    """)
+                   
+    cursor.execute("""
         CREATE TABLE aoo (
             id NUMBER PRIMARY KEY,
             lower_rate_limit NUMBER,
@@ -54,6 +79,25 @@ def createDB():
         );
     """)
 
+    cursor.execute("""
+        CREATE TABLE vdd (
+            id NUMBER PRIMARY KEY,
+            lower_rate_limit NUMBER,
+            upper_rate_limit NUMBER,
+            fixed_av_delay NUMBER,
+            dynamic_av_delay TEXT,
+            ventricular_amplitude NUMBER,
+            ventricular_pulse_width NUMBER,
+            ventricular_sensitivity NUMBER,
+            vrp NUMBER,
+            pvarp_extension NUMBER,
+            rate_smoothing NUMBER,
+            atr_duration NUMBER,
+            atr_fallback_mode TEXT,
+            atr_fallback_time NUMBER
+        );
+    """)
+
     cursor.execute("""               
         CREATE TABLE users (
             id NUMBER PRIMARY KEY, 
@@ -81,6 +125,31 @@ def get_password(id):
 
 def create_user(username, password):
     num_users = get_num_users()
+    cursor.execute("""INSERT INTO aat (
+        id,
+        lower_rate_limit,
+        upper_rate_limit,
+        atrial_amplitude,
+        atrial_pulse_width,
+        atrial_sensitivity,
+        arp,
+        pvarp
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4,0.75,250,250)
+    )
+
+    cursor.execute("""INSERT INTO vvt (
+        id,
+        lower_rate_limit,
+        upper_rate_limit,
+        ventricular_amplitude,
+        ventricular_pulse_width,
+        ventricular_sensitivity,
+        vrp
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4,2.5,320)
+    )
+
     cursor.execute("""
         INSERT INTO aoo (
             id, 
@@ -89,7 +158,8 @@ def create_user(username, password):
             atrial_amplitude, 
             atrial_pulse_width
         ) 
-        VALUES (?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4))
+        VALUES (?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4)
+    )
     
     cursor.execute("""
         INSERT INTO aai (
@@ -132,6 +202,26 @@ def create_user(username, password):
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4,2.5,320,0,"Off")
     )
+
+    cursor.execute("""
+        INSERT INTO vdd (
+            id,
+            lower_rate_limit,
+            upper_rate_limit,
+            fixed_av_delay,
+            dynamic_av_delay,
+            ventricular_amplitude,
+            ventricular_pulse_width,
+            ventricular_sensitivity,
+            vrp,
+            pvarp_extension,
+            rate_smoothing,
+            atr_duration,
+            atr_fallback_mode,
+            atr_fallback_time
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,150,"Off",3.5,0.4,2.5,320,0,"Off",20,"Off",1)
+    )
     
     cursor.execute("""
         INSERT INTO users (
@@ -155,7 +245,7 @@ def get_mode(id):
     return cursor.fetchone()[0]
 
 def lookup_parameter_value(id, mode, parameter):
-    cursor.execute("SELECT " + parameter.lower().replace(" ", "_") + " FROM " + mode + " WHERE id = ?", (id,))
+    cursor.execute("SELECT " + parameter.lower().replace(" ", "_").upper() + " FROM " + mode + " WHERE id = ?", (id,))
     return cursor.fetchone()[0]
     
 # return a dictionary of the parameters for the current mode of the user and the values for those parameters in the database
@@ -167,7 +257,7 @@ def get_mode_parameters(id):
     working_list = [description[0] for description in cursor.description][1:]
 
     for i in range(len(working_list)):
-        working_list[i] = working_list[i].replace("_", " ").title()
+        working_list[i] = working_list[i].replace("_", " ").upper()
 
         if working_list[i][-2:] == "rp":
             working_list[i] = working_list[i].upper()
@@ -179,10 +269,13 @@ def get_mode_parameters(id):
 def update_mode_parameters(id, mode, updated_values):
     try:
         columns_map = {
+            'AAT': ['lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'atrial_sensitivity', 'arp', 'pvarp'],
+            'VVT': ['lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp'],
             'AOO': ['lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width'],
             'AAI': ['lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'atrial_sensitivity', 'arp', 'pvarp', 'hysteresis', 'rate_smoothing'],
             'VOO': ['lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width'],
             'VVI': ['lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'hysteresis', 'rate_smoothing'],
+            'VDD': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'dynamic_av_delay', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'pvarp_extension', 'rate_smoothing', 'atr_duration', 'atr_fallback_mode', 'atr_fallback_time'],
             # Add mappings for other modes
         }
 
@@ -190,8 +283,8 @@ def update_mode_parameters(id, mode, updated_values):
             if col in ['arp', 'vrp', 'pvarp']:
                 return col.upper()
             else:
-                return col.replace('_', ' ').title()
-
+                return col.replace('_', ' ').upper()
+            
         # Select the columns for the current mode
         columns = columns_map.get(mode, [])
         if not columns:

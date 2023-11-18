@@ -3,6 +3,7 @@ import tkinter as tk                                                    #Import 
 import user as usr                                                      #Import user to store user date and parameters
 import validate_param as vp                                             #Import validate_param to validate parameters
 from settings import States, DATABASE_DIR, RATE_SMOOTHING_OPTIONS       #Import settings for parameters
+from settings import DYNAMIC_AV_DELAY_OPTIONS, ATR_MODE_OPTIONS         #Import settings for parameters
 from PIL import ImageTk, Image                                          #Import PIL for dynamic image resizing
 from enum import Enum                                                   #Import the enum class for states
 import os                                                               #Import os for the absolute file math
@@ -67,7 +68,7 @@ filenameBGFINAL = os.path.join(runningDirectory, 'backroundfinal.jpg')  #Append 
 #Setup the master window using tkinter
 window = tk.Tk()
 window.title("Pacemaker Device Controller-Monitor")
-window.geometry("750x450")
+window.geometry("1500x900") #750x450
 
 #Setup the database for storing data
 connector = sqlite3.connect(DATABASE_DIR)
@@ -247,11 +248,21 @@ def dashboard_state():
             label_parameter = tk.Label(frame2, text=key)          
 
             # Check if the parameter is 'Rate Smoothing' for dropdown
-            if key == "Rate Smoothing":
+            if key == "RATE SMOOTHING":
                 rate_smoothing_var = tk.StringVar(frame2)
                 rate_smoothing_var.set(mode_parameters[key])  # set the default value
                 entry = tk.OptionMenu(frame2, rate_smoothing_var, *RATE_SMOOTHING_OPTIONS)
                 entry_values[key] = rate_smoothing_var
+            elif key == "DYNAMIC AV DELAY":
+                dynamic_av_delay_var = tk.StringVar(frame2)
+                dynamic_av_delay_var.set(mode_parameters[key])  # set the default value
+                entry = tk.OptionMenu(frame2, dynamic_av_delay_var, *DYNAMIC_AV_DELAY_OPTIONS)
+                entry_values[key] = dynamic_av_delay_var
+            elif key == "ATR FALLBACK MODE":
+                atr_mode_var = tk.StringVar(frame2)
+                atr_mode_var.set(mode_parameters[key])
+                entry = tk.OptionMenu(frame2, atr_mode_var, *ATR_MODE_OPTIONS)
+                entry_values[key] = atr_mode_var
             else:
                 entry_value = tk.StringVar()
                 entry = tk.Entry(frame2, textvariable=entry_value)
