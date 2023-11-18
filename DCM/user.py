@@ -1,11 +1,7 @@
 import re
-from settings import PASSWORD_RULES, MAX_USER_COUNT, DATABASE_DIR
+from settings import PASSWORD_RULES, MAX_USER_COUNT
 from tkinter import messagebox
 import database as db
-
-# Make it an absolute filepath everytime
-import os
-runningDirectory = os.path.dirname(os.path.abspath(__file__)) #pull working directory
 
 def is_valid_register(username, password):
     if db.get_num_users() < MAX_USER_COUNT:

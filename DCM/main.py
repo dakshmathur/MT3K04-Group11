@@ -2,12 +2,11 @@
 import tkinter as tk                                                    #Import tkinter for GUI Construction
 import user as usr                                                      #Import user to store user date and parameters
 import validate_param as vp                                             #Import validate_param to validate parameters
+import database as db                                                   #Import database module for database management
 from settings import States, DATABASE_DIR, RATE_SMOOTHING_OPTIONS       #Import settings for parameters
 from settings import DYNAMIC_AV_DELAY_OPTIONS, ATR_MODE_OPTIONS         #Import settings for parameters
 from PIL import ImageTk, Image                                          #Import PIL for dynamic image resizing
-from enum import Enum                                                   #Import the enum class for states
 import os                                                               #Import os for the absolute file math
-import database as db                                                   #Import database module for database management
 
 import wmi                                              #Import Windows Management Instrumentation for checking windows usb connections
 import io                                               #Import input output
@@ -15,11 +14,10 @@ from contextlib import redirect_stdout                  #Import redirect_stdout
 import re                                               #Import regex
 import sqlite3                                          #Import sqlite3 for database management
 
-# Global state variables
+# Global variables
 connected = False                                       #Checks if the device is connected
 new_device = False                                      #Checks if a new device is connected
 logout_button_pressed = False                           #checks if the logout button is pressed
-
 current_user_id = None                                  #Stores the current user data
 
 ##CHECK IF BOARD IS CONNECTED
@@ -247,7 +245,6 @@ def dashboard_state():
         for key in mode_parameters:
             label_parameter = tk.Label(frame2, text=key)          
 
-            # Check if the parameter is 'Rate Smoothing' for dropdown
             if key == "RATE SMOOTHING":
                 rate_smoothing_var = tk.StringVar(frame2)
                 rate_smoothing_var.set(mode_parameters[key])  # set the default value
@@ -278,7 +275,9 @@ def dashboard_state():
 
     #This function checks if the logout button is pressed
     def check_button():
-        #decale logout_button_pressed as a global variable
+        global current_user_id
+        current_user_id = None
+    
         global logout_button_pressed
 
         #if logout button is True set to False
@@ -292,7 +291,7 @@ def dashboard_state():
                     widget.destroy()
             frame2.place_forget()
             change_state(States.WELCOME)
-
+    
     # Mode select
     mode = tk.StringVar(frame)
     mode_options = db.get_all_modes()
@@ -325,14 +324,9 @@ def change_state(new_state):
     # Clear the window
     clear_frame(frame)
     clear_frame(frame2)
-
     
     # Render the new state
     if new_state == States.WELCOME:
-
-        # Clear the current user data on logout
-        global current_user_data
-        current_user_data = None
 
         # Render the welcome screen
         welcome_state()
