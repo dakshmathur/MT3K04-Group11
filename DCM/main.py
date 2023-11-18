@@ -196,7 +196,7 @@ def welcome_state():
     button_register.place(relx=0.58, rely=0.65, anchor='center')
 
     # Version num/instatution
-    label_version = tk.Label(frame, text="Version 0.1.2\tMcMaster University", bg='#20202A', fg='white')
+    label_version = tk.Label(frame, text="Version 0.1.3\tMcMaster University", bg='#20202A', fg='white')
     label_version.place(relx=0.5, rely=0.95, anchor='center')
 
 # This function deines the dashboard state 
