@@ -2,7 +2,7 @@
 import tkinter as tk                                                    #Import tkinter for GUI Construction
 import user as usr                                                      #Import user to store user date and parameters
 import validate_param as vp                                             #Import validate_param to validate parameters
-from settings import States, DATABASE_DIR                               #Import settings for parameters
+from settings import States, DATABASE_DIR, RATE_SMOOTHING_OPTIONS       #Import settings for parameters
 from PIL import ImageTk, Image                                          #Import PIL for dynamic image resizing
 from enum import Enum                                                   #Import the enum class for states
 import os                                                               #Import os for the absolute file math
@@ -225,7 +225,6 @@ def dashboard_state():
 
         # Update the values
         updated_values = {key: val.get() for key, val in entry_values.items()}
-        print(updated_values)
 
         # Check if the values are valid
         if (vp.is_valid_parameters(updated_values, mode.get())):
@@ -243,24 +242,24 @@ def dashboard_state():
 
         # Create the parameter labels and entry boxes for the current mode
         mode_parameters = db.get_mode_parameters(current_user_id)
-        print(mode_parameters)
 
         for key in mode_parameters:
             label_parameter = tk.Label(frame2, text=key)          
 
-            entry_value = tk.StringVar()
-            entry = tk.Entry(frame2, textvariable=entry_value)
-
-            data = mode_parameters[key]
-            try:
-                entry.insert(0, data)
-            except:
-                pass
+            # Check if the parameter is 'Rate Smoothing' for dropdown
+            if key == "Rate Smoothing":
+                rate_smoothing_var = tk.StringVar(frame2)
+                rate_smoothing_var.set(mode_parameters[key])  # set the default value
+                entry = tk.OptionMenu(frame2, rate_smoothing_var, *RATE_SMOOTHING_OPTIONS)
+                entry_values[key] = rate_smoothing_var
+            else:
+                entry_value = tk.StringVar()
+                entry = tk.Entry(frame2, textvariable=entry_value)
+                entry.insert(0, mode_parameters[key])
+                entry_values[key] = entry_value
 
             label_parameter.pack()
             entry.pack()
-
-            entry_values[key] = entry_value
 
         # Submit button
         button_submit = tk.Button(frame2, text="Submit", command=lambda: submit_parameters(entry_values))

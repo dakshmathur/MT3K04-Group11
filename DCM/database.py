@@ -104,7 +104,7 @@ def create_user(username, password):
             hysteresis,
             rate_smoothing
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4,0.75,250,250,0,0)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4,0.75,250,250,0,"Off")
     )
     
     cursor.execute("""
@@ -130,7 +130,7 @@ def create_user(username, password):
             hysteresis,
             rate_smoothing
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4,2.5,320,0,0)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4,2.5,320,0,"Off")
     )
     
     cursor.execute("""
@@ -177,7 +177,6 @@ def get_mode_parameters(id):
     return mode_parameters
 
 def update_mode_parameters(id, mode, updated_values):
-    print(updated_values)
     try:
         columns_map = {
             'AOO': ['lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width'],
@@ -205,7 +204,6 @@ def update_mode_parameters(id, mode, updated_values):
         # Prepare the values for the SQL query
         values = [updated_values.get(transform_column_name(column), None) for column in columns]
         values.append(id)  # Append the user ID at the end
-        print(values)
 
         # Execute the query
         cursor.execute(sql_query, values)

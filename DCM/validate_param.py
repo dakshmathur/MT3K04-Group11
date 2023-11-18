@@ -52,6 +52,10 @@ def is_valid_parameters(updated_values, mode):
         PVARP = validate_pvarp(updated_values['PVARP'])
         if PVARP != False:
             error_message += PVARP
+
+        HYS = validate_hys(updated_values['Hysteresis'])
+        if HYS != False:
+            error_message += HYS
         
     if mode == "VVI":
         VA = validate_pa(updated_values['Ventricular Amplitude'])
@@ -69,6 +73,10 @@ def is_valid_parameters(updated_values, mode):
         VRP = validate_rp(updated_values['VRP'])
         if VRP != False:
             error_message += VRP
+
+        HYS = validate_hys(updated_values['Hysteresis'])
+        if HYS != False:
+            error_message += HYS
 
     if error_message != "":
         messagebox.showerror("Error", error_message)
@@ -113,7 +121,7 @@ def validate_url(value):
 def validate_pa(value):
     try:
         val = float(value)*100
-    except ValueError:
+    except ValueError:  
         return "Pulse Amplitude must be a number.\n"
     
     if not ((val == 0) or ((val >= 50) and (val <= 320)) or ((val >= 350) and (val <= 700))):
@@ -180,5 +188,23 @@ def validate_sen(value):
         return "Atrial Sensitivity must be 0.25mV, 0.5mV or 0.75mV or must be between 1.0mV and 10mV\n"
     elif (val % 500 != 0):
         return "Atrial Sensitivity must be a multiple of 0.5mV between 1.0mV and 10mV.\n"
+    else:
+        return False
+    
+# Validate the Hysteresis value entered by the user
+def validate_hys(value):
+    try:
+        val = float(value)
+    except ValueError:
+        return "Hysteresis must be a number.\n"
+    
+    if (30 <= val) and (val <= 50) and (val % 5 != 0):
+        return "Hysteresis must be a multiple of 5 between 30ms and 50ms.\n"
+    elif (50 < val) and (val <= 90) and (val % 1 != 0):
+        return "Hysteresis must be a multiple of 1 between 50ms and 90ms.\n"
+    elif (90 < val) and (val <= 175) and (val % 5 != 0):
+        return "Hysteresis must be a multiple of 5 between 90ms and 175ms.\n"
+    elif (val < 30) or (val > 175):
+        return "Hysteresis must be between 30ms and 175ms.\n"
     else:
         return False
