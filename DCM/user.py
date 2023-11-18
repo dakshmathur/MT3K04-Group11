@@ -7,7 +7,7 @@ import database as db
 import os
 runningDirectory = os.path.dirname(os.path.abspath(__file__)) #pull working directory
 
-def is_valid(username, password):
+def is_valid_register(username, password):
     if db.get_num_users() < MAX_USER_COUNT:
         error_message = ""
         if not username:
@@ -40,18 +40,14 @@ def is_existing_user(username):
         if db.get_username(i) == username:
             return True
     return False
-    
+
 # Login the user
 def login(username, password):
+    num_users = db.get_num_users()
+    for i in range(num_users):
+        success = db.get_username(i) == username and db.get_password(i) == password
 
-    # Validate the credentials
-    def validate_credentials(username, password):
-        num_users = db.get_num_users()
-        for i in range(num_users):
-            return db.get_username(i) == username and db.get_password(i) == password
-
-    # Check if the credentials are valid
-    if validate_credentials(username, password):
+    if success:
         messagebox.showinfo("Success", "User logged in successfully!")
         return True
     else:

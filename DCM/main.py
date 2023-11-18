@@ -167,7 +167,7 @@ def welcome_state():
         username, password = get_credentials()
 
         # Check if the user credentials are valid
-        if usr.is_valid(username, password):
+        if usr.is_valid_register(username, password):
             usr.register(username, password)
 
             # Clear the username and password fields for login
