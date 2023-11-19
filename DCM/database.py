@@ -98,6 +98,64 @@ def createDB():
         );
     """)
 
+    cursor.execute("""
+        CREATE TABLE doo (
+            id NUMBER PRIMARY KEY,
+            lower_rate_limit NUMBER,
+            upper_rate_limit NUMBER,
+            fixed_av_delay NUMBER,
+            atrial_amplitude NUMBER,
+            atrial_pulse_width NUMBER,
+            ventricular_amplitude NUMBER,
+            ventricular_pulse_width NUMBER
+        );
+    """)
+
+    cursor.execute("""
+        CREATE TABLE ddi (
+            id NUMBER PRIMARY KEY,
+            lower_rate_limit NUMBER,
+            upper_rate_limit NUMBER,
+            fixed_av_delay NUMBER,
+            atrial_amplitude NUMBER,
+            atrial_pulse_width NUMBER,
+            ventricular_amplitude NUMBER,
+            ventricular_pulse_width NUMBER,
+            atrial_sensitivity NUMBER,
+            ventricular_sensitivity NUMBER,
+            vrp NUMBER,
+            arp NUMBER,
+            pvarp NUMBER,
+            pvarp_extension NUMBER
+        );
+    """)
+
+    cursor.execute("""
+        CREATE TABLE ddd (
+            id NUMBER PRIMARY KEY,
+            lower_rate_limit NUMBER,
+            upper_rate_limit NUMBER,
+            fixed_av_delay NUMBER,
+            dynamic_av_delay TEXT,
+            sensed_av_delay_offset NUMBER,
+            atrial_amplitude NUMBER,
+            atrial_pulse_width NUMBER,
+            ventricular_amplitude NUMBER,
+            ventricular_pulse_width NUMBER,
+            atrial_sensitivity NUMBER,
+            ventricular_sensitivity NUMBER,
+            vrp NUMBER,
+            arp NUMBER,
+            pvarp NUMBER,
+            pvarp_extension NUMBER,
+            hysteresis NUMBER,
+            rate_smoothing NUMBER,
+            atr_duration NUMBER,
+            atr_fallback_mode TEXT,
+            atr_fallback_time NUMBER
+        );
+    """)
+
     cursor.execute("""               
         CREATE TABLE users (
             id NUMBER PRIMARY KEY, 
@@ -222,7 +280,68 @@ def create_user(username, password):
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,150,"Off",3.5,0.4,2.5,320,0,"Off",20,"Off",1)
     )
-    
+
+    cursor.execute("""
+        INSERT INTO doo (
+            id,
+            lower_rate_limit,
+            upper_rate_limit,
+            fixed_av_delay,
+            atrial_amplitude,
+            atrial_pulse_width,
+            ventricular_amplitude,
+            ventricular_pulse_width
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,150,3.5,0.4,3.5,0.4)
+    )
+
+    cursor.execute("""
+        INSERT INTO ddi (
+            id,
+            lower_rate_limit,
+            upper_rate_limit,
+            fixed_av_delay,
+            atrial_amplitude,
+            atrial_pulse_width,
+            atrial_sensitivity,
+            ventricular_amplitude,
+            ventricular_pulse_width,
+            ventricular_sensitivity,
+            vrp,
+            arp,
+            pvarp,
+            pvarp_extension
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,150,3.5,0.4,0.75,3.5,0.4,2.5,320,250,250,"Off")
+    )
+
+    cursor.execute("""
+        INSERT INTO ddd (
+            id,
+            lower_rate_limit,
+            upper_rate_limit,
+            fixed_av_delay,
+            dynamic_av_delay,
+            sensed_av_delay_offset,
+            atrial_amplitude,
+            atrial_pulse_width,
+            atrial_sensitivity,
+            arp,
+            pvarp,
+            pvarp_extension,
+            ventricular_amplitude,
+            ventricular_pulse_width,
+            ventricular_sensitivity,
+            vrp,
+            hysteresis,
+            rate_smoothing,
+            atr_duration,
+            atr_fallback_mode,
+            atr_fallback_time
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,150,"Off",0,3.5,0.4,0.75,250,250,250,3.5,0.4,2.5,320,0,"Off",20,"Off",1)
+    )
+                              
     cursor.execute("""
         INSERT INTO users (
             id, 
@@ -230,7 +349,7 @@ def create_user(username, password):
             password, 
             current_mode
             )
-            VALUES (?, ?, ?, ?)""", (num_users, username, password, "aoo")
+            VALUES (?, ?, ?, ?)""", (num_users, username, password, "ddd")
     )
     
     connect.commit()
@@ -276,6 +395,9 @@ def update_mode_parameters(id, mode, updated_values):
             'VOO': ['lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width'],
             'VVI': ['lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'hysteresis', 'rate_smoothing'],
             'VDD': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'dynamic_av_delay', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'pvarp_extension', 'rate_smoothing', 'atr_duration', 'atr_fallback_mode', 'atr_fallback_time'],
+            'DOO': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'atrial_amplitude', 'atrial_pulse_width', 'ventricular_amplitude', 'ventricular_pulse_width'],
+            'DDI': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'atrial_amplitude', 'atrial_pulse_width', 'atrial_sensitivity', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'arp', 'pvarp'],
+            'DDD': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'dynamic_av_delay', 'sensed_av_delay_offset', 'atrial_amplitude', 'atrial_pulse_width', 'atrial_sensitivity', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'arp', 'pvarp', 'hysteresis', 'rate_smoothing', 'atr_duration', 'atr_fallback_mode', 'atr_fallback_time', 'pvarp_extension'],
             # Add mappings for other modes
         }
 

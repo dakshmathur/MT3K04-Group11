@@ -148,6 +148,129 @@ def is_valid_parameters(updated_values, mode):
         if ATRFT != False:
             error_message += ATRFT
 
+    if mode == "DOO":
+        FAVD = validate_favd(updated_values['FIXED AV DELAY'])
+        if FAVD != False:
+            error_message += FAVD
+
+        AA = validate_pa(updated_values['ATRIAL AMPLITUDE'])
+        if AA != False:
+            error_message += AA
+
+        APW = validate_pw(updated_values['ATRIAL PULSE WIDTH'])
+        if APW != False:
+            error_message += APW
+
+        VA = validate_pa(updated_values['VENTRICULAR AMPLITUDE'])
+        if VA != False:
+            error_message += VA
+
+        VPW = validate_pw(updated_values['VENTRICULAR PULSE WIDTH'])
+        if VPW != False:
+            error_message += VPW
+
+    if mode == "DDI":
+        FAVD = validate_favd(updated_values['FIXED AV DELAY'])
+        if FAVD != False:
+            error_message += FAVD
+
+        AA = validate_pa(updated_values['ATRIAL AMPLITUDE'])
+        if AA != False:
+            error_message += AA
+
+        APW = validate_pw(updated_values['ATRIAL PULSE WIDTH'])
+        if APW != False:
+            error_message += APW
+
+        AS = validate_sen(updated_values['ATRIAL SENSITIVITY'])
+        if AS != False:
+            error_message += AS
+
+        ARP = validate_rp(updated_values['ARP'])
+        if ARP != False:
+            error_message += ARP
+
+        PVARP = validate_pvarp(updated_values['PVARP'])
+        if PVARP != False:
+            error_message += PVARP
+
+        VA = validate_pa(updated_values['VENTRICULAR AMPLITUDE'])
+        if VA != False:
+            error_message += VA
+
+        VPW = validate_pw(updated_values['VENTRICULAR PULSE WIDTH'])
+        if VPW != False:
+            error_message += VPW
+
+        VS = validate_sen(updated_values['VENTRICULAR SENSITIVITY'])
+        if VS != False:
+            error_message += VS
+
+        VRP = validate_rp(updated_values['VRP'])
+        if VRP != False:
+            error_message += VRP
+
+    if mode == "DDD":
+        FAVD = validate_favd(updated_values['FIXED AV DELAY'])
+        if FAVD != False:
+            error_message += FAVD
+
+        SAVD = validate_savd(updated_values['SENSED AV DELAY OFFSET'])
+        if SAVD != False:
+            error_message += SAVD
+
+        AA = validate_pa(updated_values['ATRIAL AMPLITUDE'])
+        if AA != False:
+            error_message += AA
+
+        APW = validate_pw(updated_values['ATRIAL PULSE WIDTH'])
+        if APW != False:
+            error_message += APW
+
+        AS = validate_sen(updated_values['ATRIAL SENSITIVITY'])
+        if AS != False:
+            error_message += AS
+
+        ARP = validate_rp(updated_values['ARP'])
+        if ARP != False:
+            error_message += ARP
+
+        PVARP = validate_pvarp(updated_values['PVARP'])
+        if PVARP != False:
+            error_message += PVARP
+
+        VA = validate_pa(updated_values['VENTRICULAR AMPLITUDE'])
+        if VA != False:
+            error_message += VA
+
+        VPW = validate_pw(updated_values['VENTRICULAR PULSE WIDTH'])
+        if VPW != False:
+            error_message += VPW
+
+        VS = validate_sen(updated_values['VENTRICULAR SENSITIVITY'])
+        if VS != False:
+            error_message += VS
+
+        VRP = validate_rp(updated_values['VRP'])
+        if VRP != False:
+            error_message += VRP
+
+        PVARP_EXT = validate_pvarp_ext(updated_values['PVARP EXTENSION'])
+        if PVARP_EXT != False:
+            error_message += PVARP_EXT
+
+        HYS = validate_hys(updated_values['HYSTERESIS'])
+        if HYS != False:
+            error_message += HYS
+
+        ATRD = validate_atrd(updated_values['ATR DURATION'])
+        if ATRD != False:
+            error_message += ATRD
+
+        ATRFT = validate_atrft(updated_values['ATR FALLBACK TIME'])
+        if ATRFT != False:
+            error_message += ATRFT
+
     if error_message != "":
         messagebox.showerror("Error", error_message)
         return False
@@ -283,7 +406,9 @@ def validate_hys(value):
     except ValueError:
         return "Hysteresis must be a number.\n"
     
-    if (30 <= val) and (val <= 50) and (val % 5 != 0):
+    if (val == 0):
+        return False
+    elif (30 <= val) and (val <= 50) and (val % 5 != 0):
         return "Hysteresis must be a multiple of 5 between 30ms and 50ms.\n"
     elif (50 < val) and (val <= 90) and (val % 1 != 0):
         return "Hysteresis must be a multiple of 1 between 50ms and 90ms.\n"
@@ -335,5 +460,22 @@ def validate_atrft(value):
         return "ATR Fallback Time must be between 1 and 5 minutes.\n"
     elif (val % 1 != 0):
         return "ATR Fallback Time must be a multiple of 1 minute between 1 and 5 minutes.\n"
+    else:
+        return False
+    
+# Validate the Sensed AV Delay Offset value entered by the user
+def validate_savd(value):
+    try:
+        val = float(value)*-1
+    except ValueError:
+        return "Sensed AV Delay Offset must be a number.\n"
+    
+    if ((val < 10) and (val > 100)):
+        if (val != 0):
+            return "Sensed AV Delay Offset must be 0ms (Off) or between -100ms and -10ms.\n"
+        else:
+            return False
+    elif (val % 10 != 0):
+        return "Sensed AV Delay Offset must be a multiple of 10ms between -100ms and -10ms.\n"
     else:
         return False

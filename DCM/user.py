@@ -40,6 +40,7 @@ def is_existing_user(username):
 # Login the user
 def login(username, password):
     num_users = db.get_num_users()
+    success = False
     for i in range(num_users):
         success = db.get_username(i) == username and db.get_password(i) == password
 
