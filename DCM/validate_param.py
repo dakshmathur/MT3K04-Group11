@@ -317,27 +317,27 @@ def validate_pa(value):
         val = float(value)*100
     except ValueError:  
         return "Pulse Amplitude must be a number.\n"
-    
-    if not ((val == 0) or ((val >= 50) and (val <= 320)) or ((val >= 350) and (val <= 700))):
-        return "Pulse Amplitude must be 0V, 0.5-3.2V or 3.5-7V.\n"
-    elif (50 <= val) and (val <= 320) and (val % 10 != 0):
-        return "Pulse Amplitude must be a multiple of 0.1V between 0.5V and 3.2V.\n" 
-    elif (350 < val) and (val <= 700) and (val % 50 != 0):
-        return "Pulse Amplitude must be a multiple of 0.5V between 3.5V and 7.0V.\n"
+
+    if (val == 0):
+        return False;
+    elif ((val < 0.1) or (val > 7)):
+        return "Pulse Amplitude must be 0V, or between 0.1V and 7V.\n"
+    elif (val % 0.1 != 0):
+        return "Pulse Amplitude must be a multiple of 0.1V between 0.1V and 7.0V.\n" 
     else:
         return False
 
 # Validate the Pulse Width value entered by the user
 def validate_pw(value):
     try:
-        val = float(value)*100
+        val = float(value)
     except ValueError:
         return "Pulse Width must be a number.\n"
     
-    if not ((val == 5) or ((val >= 10) and (val <= 190))):
-        return "Pulse Width must be 0.05ms or between 0.1ms and 1.9ms.\n"
-    elif (10 <= val) and (val <= 190) and (val % 10 != 0):
-        return "Pulse Width must be a multiple of 0.1ms between 0.1ms and 1.9ms.\n"
+    if not ((val >= 1) and (val <= 30)):
+        return "Pulse Width must be between 1ms and 30ms.\n"
+    elif (1 <= val) and (val <= 30) and (val % 1 != 0):
+        return "Pulse Width must be a multiple of 1ms between 1ms and 30ms.\n"
     else:
         return False
     
@@ -389,16 +389,14 @@ def validate_pvarp_ext(value):
 # Validate the Sensitivity value entered by the user
 def validate_sen(value):
     try:
-        val = float(value)*1000
+        val = float(value)
     except ValueError:
         return "Sensitivity must be a number.\n"
     
-    if ((val == 250) or (val == 500) or (val == 750)):
-        return False
-    elif (val < 1000) or (val > 10000):
-        return "Atrial Sensitivity must be 0.25mV, 0.5mV or 0.75mV or must be between 1.0mV and 10mV\n"
-    elif (val % 500 != 0):
-        return "Atrial Sensitivity must be a multiple of 0.5mV between 1.0mV and 10mV.\n"
+    if (val < 0) or (val > 5):
+        return "Atrial Sensitivity must be between 0V and 5V\n"
+    elif (val % 0.1 != 0):
+        return "Atrial Sensitivity must be a multiple of 0.1V between 0V and 5V.\n"
     else:
         return False
     
