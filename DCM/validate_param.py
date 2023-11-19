@@ -374,12 +374,15 @@ def validate_pvarp_ext(value):
     try:
         val = float(value)
     except ValueError:
-        return "PVARP Extension must be a number.\n"
+        if value == 'Off':
+            return False
+        else:
+            return "PVARP Extension must be a number.\n"
     
     if (val < 0) or ((val > 0) and (val < 50)) or (val > 400):
         return "PVARP Extension must be 0ms or between 50 and 400ms.\n"
-    elif (val % 10 != 0):
-        return "PVARP Extension must be a multiple of 10ms between 50ms and 400ms.\n"
+    elif (val % 50 != 0):
+        return "PVARP Extension must be a multiple of 50ms between 50ms and 400ms.\n"
     else:
         return False
     
@@ -404,7 +407,10 @@ def validate_hys(value):
     try:
         val = float(value)
     except ValueError:
-        return "Hysteresis must be a number.\n"
+        if value == 'Off':
+            return False
+        else:
+            return "Hysteresis must be a number.\n"
     
     if (val == 0):
         return False
@@ -468,7 +474,10 @@ def validate_savd(value):
     try:
         val = float(value)*-1
     except ValueError:
-        return "Sensed AV Delay Offset must be a number.\n"
+        if value == 'Off':
+            return False
+        else:
+            return "Sensed AV Delay Offset must be a number.\n"
     
     if ((val < 10) and (val > 100)):
         if (val != 0):

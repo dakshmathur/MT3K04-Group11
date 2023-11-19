@@ -125,8 +125,7 @@ def createDB():
             ventricular_sensitivity NUMBER,
             vrp NUMBER,
             arp NUMBER,
-            pvarp NUMBER,
-            pvarp_extension NUMBER
+            pvarp NUMBER
         );
     """)
 
@@ -309,10 +308,9 @@ def create_user(username, password):
             ventricular_sensitivity,
             vrp,
             arp,
-            pvarp,
-            pvarp_extension
+            pvarp
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,150,3.5,0.4,0.75,3.5,0.4,2.5,320,250,250,"Off")
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,150,3.5,0.4,0.75,3.5,0.4,2.5,320,250,250)
     )
 
     cursor.execute("""
@@ -339,7 +337,7 @@ def create_user(username, password):
             atr_fallback_mode,
             atr_fallback_time
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,150,"Off",0,3.5,0.4,0.75,250,250,250,3.5,0.4,2.5,320,0,"Off",20,"Off",1)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,150,"Off",0,3.5,0.4,0.75,250,250,0,3.5,0.4,2.5,320,0,"Off",20,"Off",1)
     )
                               
     cursor.execute("""
@@ -364,8 +362,14 @@ def get_mode(id):
     return cursor.fetchone()[0]
 
 def lookup_parameter_value(id, mode, parameter):
-    cursor.execute("SELECT " + parameter.lower().replace(" ", "_").upper() + " FROM " + mode + " WHERE id = ?", (id,))
-    return cursor.fetchone()[0]
+    cursor.execute("SELECT " + parameter.lower().replace(" ", "_") + " FROM " + mode + " WHERE id = ?", (id,))
+    res = cursor.fetchone()[0]
+    if res == "On":
+        return True
+    elif res == "Off":
+        return False
+    else:
+        return res
     
 # return a dictionary of the parameters for the current mode of the user and the values for those parameters in the database
 def get_mode_parameters(id):
@@ -402,10 +406,7 @@ def update_mode_parameters(id, mode, updated_values):
         }
 
         def transform_column_name(col):
-            if col in ['arp', 'vrp', 'pvarp']:
-                return col.upper()
-            else:
-                return col.replace('_', ' ').upper()
+            return col.replace('_', ' ').upper()
             
         # Select the columns for the current mode
         columns = columns_map.get(mode, [])
@@ -431,5 +432,4 @@ def update_mode_parameters(id, mode, updated_values):
 def get_all_modes():
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'users'")
     return [mode[0].upper() for mode in cursor.fetchall()]
-
 

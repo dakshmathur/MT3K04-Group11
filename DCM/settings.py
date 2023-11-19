@@ -16,7 +16,3 @@ class States(Enum):
     DASHBOARD = 1
 
 RATE_SMOOTHING_OPTIONS = ["Off", "3%", "6%", "9%", "12%", "15%", "18%", "21%", "25%"]
-
-DYNAMIC_AV_DELAY_OPTIONS = ["Off", "On"]
-
-ATR_MODE_OPTIONS = ["Off", "On"]
