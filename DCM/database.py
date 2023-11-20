@@ -1,5 +1,5 @@
 import sqlite3
-from settings import DATABASE_DIR
+from settings import DATABASE_DIR, NOMINAL_VALUES
 
 connect = sqlite3.connect(DATABASE_DIR)
 cursor = connect.cursor()
@@ -192,7 +192,7 @@ def create_user(username, password):
         arp,
         pvarp
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4,0.75,250,250)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,NOMINAL_VALUES["lower_rate_limit"],NOMINAL_VALUES["upper_rate_limit"],NOMINAL_VALUES["atrial_amplitude"],NOMINAL_VALUES["atrial_pulse_width"],NOMINAL_VALUES["atrial_sensitivity"],NOMINAL_VALUES["arp"],NOMINAL_VALUES["pvarp"])
     )
 
     cursor.execute("""INSERT INTO vvt (
@@ -204,7 +204,7 @@ def create_user(username, password):
         ventricular_sensitivity,
         vrp
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4,2.5,320)
+        VALUES (?, ?, ?, ?, ?, ?, ?)""", (num_users,NOMINAL_VALUES["lower_rate_limit"],NOMINAL_VALUES["upper_rate_limit"],NOMINAL_VALUES["ventricular_amplitude"],NOMINAL_VALUES["ventricular_pulse_width"],NOMINAL_VALUES["ventricular_sensitivity"],NOMINAL_VALUES["vrp"])
     )
 
     cursor.execute("""
@@ -215,7 +215,7 @@ def create_user(username, password):
             atrial_amplitude, 
             atrial_pulse_width
         ) 
-        VALUES (?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4)
+        VALUES (?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["atrial_amplitude"], NOMINAL_VALUES["atrial_pulse_width"])
     )
     
     cursor.execute("""
@@ -231,7 +231,7 @@ def create_user(username, password):
             hysteresis,
             rate_smoothing
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4,0.75,250,250,0,"Off")
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["atrial_amplitude"], NOMINAL_VALUES["atrial_pulse_width"], NOMINAL_VALUES["atrial_sensitivity"], NOMINAL_VALUES["arp"], NOMINAL_VALUES["pvarp"], NOMINAL_VALUES["hysteresis"], NOMINAL_VALUES["rate_smoothing"])
     )
     
     cursor.execute("""
@@ -242,7 +242,7 @@ def create_user(username, password):
             ventricular_amplitude,
             ventricular_pulse_width
         )
-        VALUES (?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4)
+        VALUES (?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["ventricular_amplitude"], NOMINAL_VALUES["ventricular_pulse_width"])
     )
     
     cursor.execute("""
@@ -257,7 +257,7 @@ def create_user(username, password):
             hysteresis,
             rate_smoothing
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,3.5,0.4,2.5,320,0,"Off")
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["ventricular_amplitude"], NOMINAL_VALUES["ventricular_pulse_width"], NOMINAL_VALUES["ventricular_sensitivity"], NOMINAL_VALUES["vrp"], NOMINAL_VALUES["hysteresis"], NOMINAL_VALUES["rate_smoothing"])
     )
 
     cursor.execute("""
@@ -277,7 +277,7 @@ def create_user(username, password):
             atr_fallback_mode,
             atr_fallback_time
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,150,"Off",3.5,0.4,2.5,320,0,"Off",20,"Off",1)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["fixed_av_delay"], NOMINAL_VALUES["dynamic_av_delay"], NOMINAL_VALUES["ventricular_amplitude"], NOMINAL_VALUES["ventricular_pulse_width"], NOMINAL_VALUES["ventricular_sensitivity"], NOMINAL_VALUES["vrp"], NOMINAL_VALUES["pvarp_extension"], NOMINAL_VALUES["rate_smoothing"], NOMINAL_VALUES["atr_duration"], NOMINAL_VALUES["atr_fallback_mode"], NOMINAL_VALUES["atr_fallback_time"])
     )
 
     cursor.execute("""
@@ -291,7 +291,7 @@ def create_user(username, password):
             ventricular_amplitude,
             ventricular_pulse_width
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,150,3.5,0.4,3.5,0.4)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["fixed_av_delay"], NOMINAL_VALUES["atrial_amplitude"], NOMINAL_VALUES["atrial_pulse_width"], NOMINAL_VALUES["ventricular_amplitude"], NOMINAL_VALUES["ventricular_pulse_width"])
     )
 
     cursor.execute("""
@@ -310,7 +310,7 @@ def create_user(username, password):
             arp,
             pvarp
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,150,3.5,0.4,0.75,3.5,0.4,2.5,320,250,250)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["fixed_av_delay"], NOMINAL_VALUES["atrial_amplitude"], NOMINAL_VALUES["atrial_pulse_width"], NOMINAL_VALUES["atrial_sensitivity"], NOMINAL_VALUES["ventricular_amplitude"], NOMINAL_VALUES["ventricular_pulse_width"], NOMINAL_VALUES["ventricular_sensitivity"], NOMINAL_VALUES["vrp"], NOMINAL_VALUES["arp"], NOMINAL_VALUES["pvarp"])
     )
 
     cursor.execute("""
@@ -337,7 +337,7 @@ def create_user(username, password):
             atr_fallback_mode,
             atr_fallback_time
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users,60,120,150,"Off",0,3.5,0.4,0.75,250,250,0,3.5,0.4,2.5,320,0,"Off",20,"Off",1)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["fixed_av_delay"], NOMINAL_VALUES["dynamic_av_delay"], NOMINAL_VALUES["sensed_av_delay_offset"], NOMINAL_VALUES["atrial_amplitude"], NOMINAL_VALUES["atrial_pulse_width"], NOMINAL_VALUES["atrial_sensitivity"], NOMINAL_VALUES["arp"], NOMINAL_VALUES["pvarp"], NOMINAL_VALUES["pvarp_extension"], NOMINAL_VALUES["ventricular_amplitude"], NOMINAL_VALUES["ventricular_pulse_width"], NOMINAL_VALUES["ventricular_sensitivity"], NOMINAL_VALUES["vrp"], NOMINAL_VALUES["hysteresis"], NOMINAL_VALUES["rate_smoothing"], NOMINAL_VALUES["atr_duration"], NOMINAL_VALUES["atr_fallback_mode"], NOMINAL_VALUES["atr_fallback_time"])
     )
                               
     cursor.execute("""
@@ -347,7 +347,7 @@ def create_user(username, password):
             password, 
             current_mode
             )
-            VALUES (?, ?, ?, ?)""", (num_users, username, password, "ddd")
+            VALUES (?, ?, ?, ?)""", (num_users, username, password, NOMINAL_VALUES["mode"])
     )
     
     connect.commit()
@@ -362,7 +362,7 @@ def get_mode(id):
     return cursor.fetchone()[0]
 
 def lookup_parameter_value(id, mode, parameter):
-    cursor.execute("SELECT " + parameter.lower().replace(" ", "_") + " FROM " + mode + " WHERE id = ?", (id,))
+    cursor.execute("SELECT " + upper_to_lower(parameter) + " FROM " + mode + " WHERE id = ?", (id,))
     res = cursor.fetchone()[0]
     if res == "On":
         return True
@@ -380,7 +380,7 @@ def get_mode_parameters(id):
     working_list = [description[0] for description in cursor.description][1:]
 
     for i in range(len(working_list)):
-        working_list[i] = working_list[i].replace("_", " ").upper()
+        working_list[i] = lower_to_upper(working_list[i])
 
         if working_list[i][-2:] == "rp":
             working_list[i] = working_list[i].upper()
@@ -388,6 +388,12 @@ def get_mode_parameters(id):
         mode_parameters[working_list[i]] = lookup_parameter_value(id, mode, working_list[i])
 
     return mode_parameters
+
+def lower_to_upper(text):
+    return text.replace('_', ' ').upper()
+
+def upper_to_lower(text):
+    return text.replace(' ', '_').lower()
 
 def update_mode_parameters(id, mode, updated_values):
     try:
@@ -404,10 +410,7 @@ def update_mode_parameters(id, mode, updated_values):
             'DDD': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'dynamic_av_delay', 'sensed_av_delay_offset', 'atrial_amplitude', 'atrial_pulse_width', 'atrial_sensitivity', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'arp', 'pvarp', 'hysteresis', 'rate_smoothing', 'atr_duration', 'atr_fallback_mode', 'atr_fallback_time', 'pvarp_extension'],
             # Add mappings for other modes
         }
-
-        def transform_column_name(col):
-            return col.replace('_', ' ').upper()
-            
+           
         # Select the columns for the current mode
         columns = columns_map.get(mode, [])
         if not columns:
@@ -418,7 +421,7 @@ def update_mode_parameters(id, mode, updated_values):
         sql_query = f"UPDATE {mode.lower()} SET {set_clause} WHERE id = ?"
 
         # Prepare the values for the SQL query
-        values = [updated_values.get(transform_column_name(column), None) for column in columns]
+        values = [updated_values.get(lower_to_upper(column), None) for column in columns]
         values.append(id)  # Append the user ID at the end
 
         # Execute the query
