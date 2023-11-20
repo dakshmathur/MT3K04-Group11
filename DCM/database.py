@@ -155,6 +155,171 @@ def createDB():
         );
     """)
 
+    cursor.execute("""
+        CREATE TABLE aoor (
+            id NUMBER PRIMARY KEY,
+            lower_rate_limit NUMBER,
+            upper_rate_limit NUMBER,
+            maximum_sensor_rate NUMBER,
+            atrial_amplitude NUMBER,
+            atrial_pulse_width NUMBER,
+            activity_threshold NUMBER,
+            reaction_time NUMBER,
+            response_factor NUMBER,
+            recovery_time NUMBER
+        );
+    """)
+
+    cursor.execute("""
+        CREATE TABLE aair (
+            id NUMBER PRIMARY KEY,
+            lower_rate_limit NUMBER,
+            upper_rate_limit NUMBER,
+            maximum_sensor_rate NUMBER,
+            atrial_amplitude NUMBER,
+            atrial_pulse_width NUMBER,
+            atrial_sensitivity NUMBER,
+            arp NUMBER,
+            pvarp NUMBER,
+            hysteresis NUMBER,
+            rate_smoothing NUMBER,
+            activity_threshold NUMBER,
+            reaction_time NUMBER,
+            response_factor NUMBER,
+            recovery_time NUMBER
+        );           
+    """)
+
+    cursor.execute("""
+        CREATE TABLE voor (
+            id NUMBER PRIMARY KEY,
+            lower_rate_limit NUMBER,
+            upper_rate_limit NUMBER,
+            maximum_sensor_rate NUMBER,
+            ventricular_amplitude NUMBER,
+            ventricular_pulse_width NUMBER,
+            activity_threshold NUMBER,
+            reaction_time NUMBER,
+            response_factor NUMBER,
+            recovery_time NUMBER
+        );
+    """)
+
+    cursor.execute("""
+        CREATE TABLE vvir (
+            id NUMBER PRIMARY KEY,
+            lower_rate_limit NUMBER,
+            upper_rate_limit NUMBER,
+            maximum_sensor_rate NUMBER,
+            ventricular_amplitude NUMBER,
+            ventricular_pulse_width NUMBER,
+            ventricular_sensitivity NUMBER,
+            vrp NUMBER,
+            hysteresis NUMBER,
+            rate_smoothing NUMBER,
+            activity_threshold NUMBER,
+            reaction_time NUMBER,
+            response_factor NUMBER,
+            recovery_time NUMBER
+        );
+    """)
+
+    cursor.execute("""
+        CREATE TABLE vddr (
+            id NUMBER PRIMARY KEY,
+            lower_rate_limit NUMBER,
+            upper_rate_limit NUMBER,
+            maximum_sensor_rate NUMBER,
+            fixed_av_delay NUMBER,
+            dynamic_av_delay TEXT,
+            ventricular_amplitude NUMBER,
+            ventricular_pulse_width NUMBER,
+            ventricular_sensitivity NUMBER,
+            vrp NUMBER,
+            pvarp_extension NUMBER,
+            rate_smoothing NUMBER,
+            atr_duration NUMBER,
+            atr_fallback_mode TEXT,
+            atr_fallback_time NUMBER,
+            activity_threshold NUMBER,
+            reaction_time NUMBER,
+            response_factor NUMBER,
+            recovery_time NUMBER
+        );
+    """)
+
+    cursor.execute("""
+        CREATE TABLE door (
+            id NUMBER PRIMARY KEY,
+            lower_rate_limit NUMBER,
+            upper_rate_limit NUMBER,
+            maximum_sensor_rate NUMBER,
+            fixed_av_delay NUMBER,
+            atrial_amplitude NUMBER,
+            atrial_pulse_width NUMBER,
+            ventricular_amplitude NUMBER,
+            ventricular_pulse_width NUMBER,
+            activity_threshold NUMBER,
+            reaction_time NUMBER,
+            response_factor NUMBER,
+            recovery_time NUMBER
+        );
+    """)
+
+    cursor.execute("""
+        CREATE TABLE ddir (
+            id NUMBER PRIMARY KEY,
+            lower_rate_limit NUMBER,
+            upper_rate_limit NUMBER,
+            maximum_sensor_rate NUMBER,
+            fixed_av_delay NUMBER,
+            atrial_amplitude NUMBER,
+            atrial_pulse_width NUMBER,
+            ventricular_amplitude NUMBER,
+            ventricular_pulse_width NUMBER,
+            atrial_sensitivity NUMBER,
+            ventricular_sensitivity NUMBER,
+            vrp NUMBER,
+            arp NUMBER,
+            pvarp NUMBER,
+            activity_threshold NUMBER,
+            reaction_time NUMBER,
+            response_factor NUMBER,
+            recovery_time NUMBER
+        );
+    """)
+
+    cursor.execute("""
+        CREATE TABLE dddr (
+            id NUMBER PRIMARY KEY,
+            lower_rate_limit NUMBER,
+            upper_rate_limit NUMBER,
+            maximum_sensor_rate NUMBER,
+            fixed_av_delay NUMBER,
+            dynamic_av_delay TEXT,
+            sensed_av_delay_offset NUMBER,
+            atrial_amplitude NUMBER,
+            atrial_pulse_width NUMBER,
+            ventricular_amplitude NUMBER,
+            ventricular_pulse_width NUMBER,
+            atrial_sensitivity NUMBER,
+            ventricular_sensitivity NUMBER,
+            vrp NUMBER,
+            arp NUMBER,
+            pvarp NUMBER,
+            pvarp_extension NUMBER,
+            hysteresis NUMBER,
+            rate_smoothing NUMBER,
+            atr_duration NUMBER,
+            atr_fallback_mode TEXT,
+            atr_fallback_time NUMBER,
+            activity_threshold NUMBER,
+            reaction_time NUMBER,
+            response_factor NUMBER,
+            recovery_time NUMBER
+        );
+    """)                  
+
     cursor.execute("""               
         CREATE TABLE users (
             id NUMBER PRIMARY KEY, 
@@ -339,7 +504,180 @@ def create_user(username, password):
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["fixed_av_delay"], NOMINAL_VALUES["dynamic_av_delay"], NOMINAL_VALUES["sensed_av_delay_offset"], NOMINAL_VALUES["atrial_amplitude"], NOMINAL_VALUES["atrial_pulse_width"], NOMINAL_VALUES["atrial_sensitivity"], NOMINAL_VALUES["arp"], NOMINAL_VALUES["pvarp"], NOMINAL_VALUES["pvarp_extension"], NOMINAL_VALUES["ventricular_amplitude"], NOMINAL_VALUES["ventricular_pulse_width"], NOMINAL_VALUES["ventricular_sensitivity"], NOMINAL_VALUES["vrp"], NOMINAL_VALUES["hysteresis"], NOMINAL_VALUES["rate_smoothing"], NOMINAL_VALUES["atr_duration"], NOMINAL_VALUES["atr_fallback_mode"], NOMINAL_VALUES["atr_fallback_time"])
     )
-                              
+
+    cursor.execute("""
+        INSERT INTO aoor (
+            id,
+            lower_rate_limit,
+            upper_rate_limit,
+            maximum_sensor_rate,
+            atrial_amplitude,
+            atrial_pulse_width,
+            activity_threshold,
+            reaction_time,
+            response_factor,
+            recovery_time
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["maximum_sensor_rate"], NOMINAL_VALUES["atrial_amplitude"], NOMINAL_VALUES["atrial_pulse_width"], NOMINAL_VALUES["activity_threshold"], NOMINAL_VALUES["reaction_time"], NOMINAL_VALUES["response_factor"], NOMINAL_VALUES["recovery_time"])
+    )
+
+    cursor.execute("""
+        INSERT INTO aair (
+            id,
+            lower_rate_limit,
+            upper_rate_limit,
+            maximum_sensor_rate,
+            atrial_amplitude,
+            atrial_pulse_width,
+            atrial_sensitivity,
+            arp,
+            pvarp,
+            hysteresis,
+            rate_smoothing,
+            activity_threshold,
+            reaction_time,
+            response_factor,
+            recovery_time
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["maximum_sensor_rate"], NOMINAL_VALUES["atrial_amplitude"], NOMINAL_VALUES["atrial_pulse_width"], NOMINAL_VALUES["atrial_sensitivity"], NOMINAL_VALUES["arp"], NOMINAL_VALUES["pvarp"], NOMINAL_VALUES["hysteresis"], NOMINAL_VALUES["rate_smoothing"], NOMINAL_VALUES["activity_threshold"], NOMINAL_VALUES["reaction_time"], NOMINAL_VALUES["response_factor"], NOMINAL_VALUES["recovery_time"])
+    )
+
+    cursor.execute("""
+        INSERT INTO voor (
+            id,
+            lower_rate_limit,
+            upper_rate_limit,
+            maximum_sensor_rate,
+            ventricular_amplitude,
+            ventricular_pulse_width,
+            activity_threshold,
+            reaction_time,
+            response_factor,
+            recovery_time
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["maximum_sensor_rate"], NOMINAL_VALUES["ventricular_amplitude"], NOMINAL_VALUES["ventricular_pulse_width"], NOMINAL_VALUES["activity_threshold"], NOMINAL_VALUES["reaction_time"], NOMINAL_VALUES["response_factor"], NOMINAL_VALUES["recovery_time"])
+    )
+
+    cursor.execute("""
+        INSERT INTO vvir (
+            id,
+            lower_rate_limit,
+            upper_rate_limit,
+            maximum_sensor_rate,
+            ventricular_amplitude,
+            ventricular_pulse_width,
+            ventricular_sensitivity,
+            vrp,
+            hysteresis,
+            rate_smoothing,
+            activity_threshold,
+            reaction_time,
+            response_factor,
+            recovery_time
+        )
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["maximum_sensor_rate"], NOMINAL_VALUES["ventricular_amplitude"], NOMINAL_VALUES["ventricular_pulse_width"], NOMINAL_VALUES["ventricular_sensitivity"], NOMINAL_VALUES["vrp"], NOMINAL_VALUES["hysteresis"], NOMINAL_VALUES["rate_smoothing"], NOMINAL_VALUES["activity_threshold"], NOMINAL_VALUES["reaction_time"], NOMINAL_VALUES["response_factor"], NOMINAL_VALUES["recovery_time"])
+    )
+
+    cursor.execute("""
+        INSERT INTO vddr (
+            id,
+            lower_rate_limit,
+            upper_rate_limit,
+            maximum_sensor_rate,
+            fixed_av_delay,
+            dynamic_av_delay,
+            ventricular_amplitude,
+            ventricular_pulse_width,
+            ventricular_sensitivity,
+            vrp,
+            pvarp_extension,
+            rate_smoothing,
+            atr_duration,
+            atr_fallback_mode,
+            atr_fallback_time,
+            activity_threshold,
+            reaction_time,
+            response_factor,
+            recovery_time
+        )
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["maximum_sensor_rate"], NOMINAL_VALUES["fixed_av_delay"], NOMINAL_VALUES["dynamic_av_delay"], NOMINAL_VALUES["ventricular_amplitude"], NOMINAL_VALUES["ventricular_pulse_width"], NOMINAL_VALUES["ventricular_sensitivity"], NOMINAL_VALUES["vrp"], NOMINAL_VALUES["pvarp_extension"], NOMINAL_VALUES["rate_smoothing"], NOMINAL_VALUES["atr_duration"], NOMINAL_VALUES["atr_fallback_mode"], NOMINAL_VALUES["atr_fallback_time"], NOMINAL_VALUES["activity_threshold"], NOMINAL_VALUES["reaction_time"], NOMINAL_VALUES["response_factor"], NOMINAL_VALUES["recovery_time"])
+    )
+
+    cursor.execute("""
+        INSERT INTO door (
+            id,
+            lower_rate_limit,
+            upper_rate_limit,
+            maximum_sensor_rate,
+            fixed_av_delay,
+            atrial_amplitude,
+            atrial_pulse_width,
+            ventricular_amplitude,
+            ventricular_pulse_width,
+            activity_threshold,
+            reaction_time,
+            response_factor,
+            recovery_time
+        )
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["maximum_sensor_rate"], NOMINAL_VALUES["fixed_av_delay"], NOMINAL_VALUES["atrial_amplitude"], NOMINAL_VALUES["atrial_pulse_width"], NOMINAL_VALUES["ventricular_amplitude"], NOMINAL_VALUES["ventricular_pulse_width"], NOMINAL_VALUES["activity_threshold"], NOMINAL_VALUES["reaction_time"], NOMINAL_VALUES["response_factor"], NOMINAL_VALUES["recovery_time"])
+    )
+
+    cursor.execute("""
+        INSERT INTO ddir (
+            id,
+            lower_rate_limit,
+            upper_rate_limit,
+            maximum_sensor_rate,
+            fixed_av_delay,
+            atrial_amplitude,
+            atrial_pulse_width,
+            ventricular_amplitude,
+            ventricular_pulse_width,
+            atrial_sensitivity,
+            ventricular_sensitivity,
+            vrp,
+            arp,
+            pvarp,
+            activity_threshold,
+            reaction_time,
+            response_factor,
+            recovery_time
+        )
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["maximum_sensor_rate"], NOMINAL_VALUES["fixed_av_delay"], NOMINAL_VALUES["atrial_amplitude"], NOMINAL_VALUES["atrial_pulse_width"], NOMINAL_VALUES["ventricular_amplitude"], NOMINAL_VALUES["ventricular_pulse_width"], NOMINAL_VALUES["atrial_sensitivity"], NOMINAL_VALUES["ventricular_sensitivity"], NOMINAL_VALUES["vrp"], NOMINAL_VALUES["arp"], NOMINAL_VALUES["pvarp"], NOMINAL_VALUES["activity_threshold"], NOMINAL_VALUES["reaction_time"], NOMINAL_VALUES["response_factor"], NOMINAL_VALUES["recovery_time"])
+    )
+
+    cursor.execute("""
+        INSERT INTO dddr (
+            id,
+            lower_rate_limit,
+            upper_rate_limit,
+            maximum_sensor_rate,
+            fixed_av_delay,
+            dynamic_av_delay,
+            sensed_av_delay_offset,
+            atrial_amplitude,
+            atrial_pulse_width,
+            ventricular_amplitude,
+            ventricular_pulse_width,
+            atrial_sensitivity,
+            ventricular_sensitivity,
+            vrp,
+            arp,
+            pvarp,
+            pvarp_extension,
+            hysteresis,
+            rate_smoothing,
+            atr_duration,
+            atr_fallback_mode,
+            atr_fallback_time,
+            activity_threshold,
+            reaction_time,
+            response_factor,
+            recovery_time
+        )
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (num_users, NOMINAL_VALUES["lower_rate_limit"], NOMINAL_VALUES["upper_rate_limit"], NOMINAL_VALUES["maximum_sensor_rate"], NOMINAL_VALUES["fixed_av_delay"], NOMINAL_VALUES["dynamic_av_delay"], NOMINAL_VALUES["sensed_av_delay_offset"], NOMINAL_VALUES["atrial_amplitude"], NOMINAL_VALUES["atrial_pulse_width"], NOMINAL_VALUES["ventricular_amplitude"], NOMINAL_VALUES["ventricular_pulse_width"], NOMINAL_VALUES["atrial_sensitivity"], NOMINAL_VALUES["ventricular_sensitivity"], NOMINAL_VALUES["vrp"], NOMINAL_VALUES["arp"], NOMINAL_VALUES["pvarp"], NOMINAL_VALUES["pvarp_extension"], NOMINAL_VALUES["hysteresis"], NOMINAL_VALUES["rate_smoothing"], NOMINAL_VALUES["atr_duration"], NOMINAL_VALUES["atr_fallback_mode"], NOMINAL_VALUES["atr_fallback_time"], NOMINAL_VALUES["activity_threshold"], NOMINAL_VALUES["reaction_time"], NOMINAL_VALUES["response_factor"], NOMINAL_VALUES["recovery_time"])
+    )
+
     cursor.execute("""
         INSERT INTO users (
             id, 
@@ -408,6 +746,14 @@ def update_mode_parameters(id, mode, updated_values):
             'DOO': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'atrial_amplitude', 'atrial_pulse_width', 'ventricular_amplitude', 'ventricular_pulse_width'],
             'DDI': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'atrial_amplitude', 'atrial_pulse_width', 'atrial_sensitivity', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'arp', 'pvarp'],
             'DDD': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'dynamic_av_delay', 'sensed_av_delay_offset', 'atrial_amplitude', 'atrial_pulse_width', 'atrial_sensitivity', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'arp', 'pvarp', 'hysteresis', 'rate_smoothing', 'atr_duration', 'atr_fallback_mode', 'atr_fallback_time', 'pvarp_extension'],
+            'AOOR': ['lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'maximum_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'],
+            'AAIR': ['lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'atrial_sensitivity', 'arp', 'pvarp', 'hysteresis', 'rate_smoothing', 'maximum_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'],
+            'VOOR': ['lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'maximum_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'],
+            'VVIR': ['lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'hysteresis', 'rate_smoothing', 'maximum_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'],
+            'VDDR': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'dynamic_av_delay', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'pvarp_extension', 'rate_smoothing', 'maximum_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'atr_duration', 'atr_fallback_mode', 'atr_fallback_time'],
+            'DOOR': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'atrial_amplitude', 'atrial_pulse_width', 'ventricular_amplitude', 'ventricular_pulse_width', 'maximum_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'],
+            'DDIR': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'atrial_amplitude', 'atrial_pulse_width', 'atrial_sensitivity', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'arp', 'pvarp', 'maximum_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'],
+            'DDDR': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'dynamic_av_delay', 'sensed_av_delay_offset', 'atrial_amplitude', 'atrial_pulse_width', 'atrial_sensitivity', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'arp', 'pvarp', 'hysteresis', 'rate_smoothing', 'maximum_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'atr_duration', 'atr_fallback_mode', 'atr_fallback_time', 'pvarp_extension'],
             # Add mappings for other modes
         }
            

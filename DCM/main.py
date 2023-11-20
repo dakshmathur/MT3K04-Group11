@@ -142,7 +142,7 @@ def welcome_state():
     button_register.place(relx=0.58, rely=0.65, anchor='center')
 
     # Version num/instatution
-    label_version = tk.Label(frame, text="Version 0.1.5\tMcMaster University", bg='#20202A', fg='white')
+    label_version = tk.Label(frame, text="Version 0.1.6\tMcMaster University", bg='#20202A', fg='white')
     label_version.place(relx=0.5, rely=0.95, anchor='center')
 
 # This function deines the dashboard state 
@@ -176,15 +176,15 @@ def dashboard_state():
     hys_enabled = tk.BooleanVar(value=False)
     sensed_av_delay_enabled = tk.BooleanVar(value=False)
     
-    if (mode.get() == "VDD" or mode.get() == "DDD"):
+    if (mode.get() == "VDD" or mode.get() == "DDD" or mode.get() == "DOOR" or mode.get() == "DDDR"):
         pvarp_ext_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "pvarp_extension"))
         dynamic_av_delay_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "dynamic_av_delay"))
         atr_mode_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "atr_fallback_mode"))
 
-    if (mode.get() == "AAI" or mode.get() == "VVI" or mode.get() == "DDD"):
+    if (mode.get() == "AAI" or mode.get() == "VVI" or mode.get() == "DDD" or mode.get() == "AAIR" or mode.get() == "VVIR" or mode.get() == "DDDR"):
         hys_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "hysteresis"))
         
-    if (mode.get() == "DDD"):
+    if (mode.get() == "DDD" or mode.get() == "DDDR"):
          sensed_av_delay_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "sensed_av_delay_offset"))
 
     # Submit the parameters
