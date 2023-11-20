@@ -2,6 +2,7 @@ from tkinter import messagebox
 
 # Validate the parameters
 def is_valid_parameters(updated_values, mode):
+
     error_message = ""
 
     # Access values by their keys
@@ -277,8 +278,7 @@ def is_valid_parameters(updated_values, mode):
     else:
         messagebox.showinfo("Success", "Parameters Updated.")
         return True
-
-
+    
 # Validate the LRL value entered by the user
 def validate_lrl(value):
     try:
@@ -320,9 +320,9 @@ def validate_pa(value):
 
     if (val == 0):
         return False;
-    elif ((val < 0.1) or (val > 7)):
+    elif ((val < 10) or (val > 700)):
         return "Pulse Amplitude must be 0V, or between 0.1V and 7V.\n"
-    elif (val % 0.1 != 0):
+    elif (val % 10 != 0):
         return "Pulse Amplitude must be a multiple of 0.1V between 0.1V and 7.0V.\n" 
     else:
         return False
@@ -336,7 +336,7 @@ def validate_pw(value):
     
     if not ((val >= 1) and (val <= 30)):
         return "Pulse Width must be between 1ms and 30ms.\n"
-    elif (1 <= val) and (val <= 30) and (val % 1 != 0):
+    elif (val % 1 != 0):
         return "Pulse Width must be a multiple of 1ms between 1ms and 30ms.\n"
     else:
         return False
@@ -389,14 +389,14 @@ def validate_pvarp_ext(value):
 # Validate the Sensitivity value entered by the user
 def validate_sen(value):
     try:
-        val = float(value)
+        val = float(value)*100
     except ValueError:
         return "Sensitivity must be a number.\n"
     
-    if (val < 0) or (val > 5):
-        return "Atrial Sensitivity must be between 0V and 5V\n"
-    elif (val % 0.1 != 0):
-        return "Atrial Sensitivity must be a multiple of 0.1V between 0V and 5V.\n"
+    if (val < 0) or (val > 500):
+        return "Sensitivity must be between 0V and 5V\n"
+    elif (val % 10 != 0):
+        return "Sensitivity must be a multiple of 0.1V between 0V and 5V.\n"
     else:
         return False
     

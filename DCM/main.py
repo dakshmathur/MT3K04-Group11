@@ -147,27 +147,6 @@ def welcome_state():
 
 # This function deines the dashboard state 
 def dashboard_state():
-    mode = tk.StringVar(frame)
-    mode_options = db.get_all_modes()
-    mode.set(db.get_mode(current_user_id).upper())
-
-    pvarp_ext_enabled = False
-    dynamic_av_delay_enabled = False
-    atr_mode_enabled = False
-    hys_enabled = False
-    sensed_av_delay_enabled = False
-
-    if (mode.get() == "VDD" or mode.get() == "DDD"):
-        pvarp_ext_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "pvarp_extension"))
-        dynamic_av_delay_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "dynamic_av_delay"))
-        atr_mode_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "atr_fallback_mode"))
-
-    if (mode.get() == "AAI" or mode.get() == "VVI" or mode.get() == "DDD"):
-        hys_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "hysteresis"))
-        
-    if (mode.get() == "DDD"):
-         sensed_av_delay_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "sensed_av_delay_offset"))
-
 
     # Connected/not connected device label
     if connected:
@@ -188,20 +167,32 @@ def dashboard_state():
     # Place label in frame
     label_new_device.place(relx=0.5, rely=0.15, anchor='center')
 
+    mode = tk.StringVar(frame)
+    mode.set(db.get_mode(current_user_id).upper())
+
+    pvarp_ext_enabled = tk.BooleanVar(value=False)
+    dynamic_av_delay_enabled = tk.BooleanVar(value=False)
+    atr_mode_enabled = tk.BooleanVar(value=False)
+    hys_enabled = tk.BooleanVar(value=False)
+    sensed_av_delay_enabled = tk.BooleanVar(value=False)
+    
+    if (mode.get() == "VDD" or mode.get() == "DDD"):
+        pvarp_ext_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "pvarp_extension"))
+        dynamic_av_delay_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "dynamic_av_delay"))
+        atr_mode_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "atr_fallback_mode"))
+
+    if (mode.get() == "AAI" or mode.get() == "VVI" or mode.get() == "DDD"):
+        hys_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "hysteresis"))
+        
+    if (mode.get() == "DDD"):
+         sensed_av_delay_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "sensed_av_delay_offset"))
+
     # Submit the parameters
     def submit_parameters(entry_values):
-
-        # Update the values
         updated_values = {key: val.get() for key, val in entry_values.items()}
-        
+
         if not pvarp_ext_enabled.get():
             updated_values["PVARP EXTENSION"] = 'Off'
-
-        if not hys_enabled.get():
-            updated_values["HYSTERESIS"] = 'Off'
-
-        if not sensed_av_delay_enabled.get():
-            updated_values["SENSED AV DELAY OFFSET"] = 'Off'
 
         if not dynamic_av_delay_enabled.get():
             updated_values["DYNAMIC AV DELAY"] = 'Off'
@@ -212,24 +203,12 @@ def dashboard_state():
             updated_values["ATR FALLBACK MODE"] = 'Off'
         else:
             updated_values["ATR FALLBACK MODE"] = 'On'
-
-        # Check if the values are valid
+    
         if (vp.is_valid_parameters(updated_values, mode.get())):
             db.update_mode_parameters(current_user_id, mode.get(), updated_values)
 
-    # This function updates the parameters
     def update_parameters():
-        if (mode.get() == "VDD" or mode.get() == "DDD"):
-            pvarp_ext_enabled.set(db.lookup_parameter_value(current_user_id, mode.get(), "pvarp_extension"))
-            dynamic_av_delay_enabled.set(db.lookup_parameter_value(current_user_id, mode.get(), "dynamic_av_delay"))
-            atr_mode_enabled.set(db.lookup_parameter_value(current_user_id, mode.get(), "atr_fallback_mode"))
 
-        if (mode.get() == "AAI" or mode.get() == "VVI" or mode.get() == "DDD"):
-            hys_enabled.set(db.lookup_parameter_value(current_user_id, mode.get(), "hysteresis"))
-
-        if (mode.get() == "DDD"):
-            sensed_av_delay_enabled.set(db.lookup_parameter_value(current_user_id, mode.get(), "sensed_av_delay_offset"))
-        
         def toggle_pvarp_ext():
             if pvarp_ext_enabled.get():
                 entry_pvarp_ext.configure(state='normal')
@@ -260,75 +239,83 @@ def dashboard_state():
             else:
                 atr_mode_enabled.set(False)
 
+        if (mode.get() == "VDD" or mode.get() == "DDD"):
+            pvarp_ext_enabled.set(db.lookup_parameter_value(current_user_id, mode.get(), "pvarp_extension"))
+            dynamic_av_delay_enabled.set(db.lookup_parameter_value(current_user_id, mode.get(), "dynamic_av_delay"))
+            atr_mode_enabled.set(db.lookup_parameter_value(current_user_id, mode.get(), "atr_fallback_mode"))
+
+        if (mode.get() == "AAI" or mode.get() == "VVI" or mode.get() == "DDD"):
+            hys_enabled.set(db.lookup_parameter_value(current_user_id, mode.get(), "hysteresis"))
+
+        if (mode.get() == "DDD"):
+            sensed_av_delay_enabled.set(db.lookup_parameter_value(current_user_id, mode.get(), "sensed_av_delay_offset"))
+
         for widget in frame2.winfo_children():
             widget.forget()
 
-        # Update the database with the new mode
         db.update_mode(current_user_id, mode.get().lower())
 
         entry_values = {}
 
-        # Create the parameter labels and entry boxes for the current mode
         mode_parameters = db.get_mode_parameters(current_user_id)
 
-        for key in mode_parameters:
-            label = key + ((' (' + PARAMETER_UNITS[db.upper_to_lower(key)] + ')') if key != "" else '')
+        for parameter in mode_parameters:
+            label = parameter + ((' (' + PARAMETER_UNITS[db.upper_to_lower(parameter)] + ')') if parameter != '' else '')
             label_parameter = tk.Label(frame2, text=label)      
             label_parameter.pack()    
 
             # Dropdowns
-            if key == "RATE SMOOTHING":
+            if parameter == "RATE SMOOTHING":
                 rate_smoothing_var = tk.StringVar(frame2)
-                rate_smoothing_var.set(mode_parameters[key])  # set the default value
+                rate_smoothing_var.set(mode_parameters[parameter])
                 entry = tk.OptionMenu(frame2, rate_smoothing_var, *RATE_SMOOTHING_OPTIONS)
-                entry_values[key] = rate_smoothing_var
+                entry_values[parameter] = rate_smoothing_var
 
             # Checkboxes
-            elif key == "DYNAMIC AV DELAY":
+            elif parameter == "DYNAMIC AV DELAY":
                 checkbox_dynamic_av_delay = tk.Checkbutton(frame2, text="Enable", var=dynamic_av_delay_enabled, command=toggle_dynamic_av_delay)
                 checkbox_dynamic_av_delay.pack()
-                entry_values[key] = dynamic_av_delay_enabled
-            elif key == "ATR FALLBACK MODE":
+                entry_values[parameter] = dynamic_av_delay_enabled
+            elif parameter == "ATR FALLBACK MODE":
                 checkbox_atr_mode = tk.Checkbutton(frame2, text="Enable", var=atr_mode_enabled, command=toggle_atr_mode)
                 checkbox_atr_mode.pack()
-                entry_values[key] = atr_mode_enabled
+                entry_values[parameter] = atr_mode_enabled
 
             # Checkboxes + Input Boxes
-            elif key == "PVARP EXTENSION":
+            elif parameter == "PVARP EXTENSION":
                 entry_pvarp_ext = tk.Entry(frame2, textvariable=entry_values)
-                entry_pvarp_ext.insert(0, mode_parameters[key])
+                entry_pvarp_ext.insert(0, mode_parameters[parameter])
                 toggle_pvarp_ext()
                 checkbox_pvarp_ext = tk.Checkbutton(frame2, text="Enable", var=pvarp_ext_enabled, command=toggle_pvarp_ext)
                 checkbox_pvarp_ext.pack()
                 entry_pvarp_ext.pack()
-                entry_values[key] = entry_pvarp_ext
-            elif key == "HYSTERESIS":
+                entry_values[parameter] = entry_pvarp_ext
+            elif parameter == "HYSTERESIS":
                 entry_hys = tk.Entry(frame2, textvariable=entry_values)
-                entry_hys.insert(0, mode_parameters[key])
+                entry_hys.insert(0, mode_parameters[parameter])
                 toggle_hys()
                 checkbox_hys = tk.Checkbutton(frame2, text="Enable", var=hys_enabled, command=toggle_hys)
                 checkbox_hys.pack()
                 entry_hys.pack()
-                entry_values[key] = entry_hys
-            elif key == "SENSED AV DELAY OFFSET":
+                entry_values[parameter] = entry_hys
+            elif parameter == "SENSED AV DELAY OFFSET":
                 entry_sensed_av_delay = tk.Entry(frame2, textvariable=entry_values)
-                entry_sensed_av_delay.insert(0, mode_parameters[key]) 
+                entry_sensed_av_delay.insert(0, mode_parameters[parameter]) 
                 toggle_sensed_av_delay()
                 checkbox_sensed_av_delay= tk.Checkbutton(frame2, text="Enable", var=sensed_av_delay_enabled , command=toggle_sensed_av_delay)
                 checkbox_sensed_av_delay.pack()
                 entry_sensed_av_delay.pack()
-                entry_values[key] = entry_sensed_av_delay
+                entry_values[parameter] = entry_sensed_av_delay
 
             # Input Boxes
             else:
                 entry_value = tk.StringVar()
                 entry = tk.Entry(frame2, textvariable=entry_value)
-                entry.insert(0, mode_parameters[key])
-                entry_values[key] = entry_value
+                entry.insert(0, mode_parameters[parameter])
+                entry_values[parameter] = entry_value
 
             entry.pack()
 
-        # Submit button
         button_submit = tk.Button(frame2, text="Submit", command=lambda: submit_parameters(entry_values))
         button_submit.pack()
 
@@ -352,6 +339,7 @@ def dashboard_state():
             change_state(States.WELCOME)
 
     # Place the mode and menu
+    mode_options = db.get_all_modes()
     mode_menu = tk.OptionMenu(frame, mode, *mode_options)
     button_mode = tk.Button(frame, text="Set Mode", command=update_parameters)
     mode_menu.place(relx=0.25, rely=0.25, anchor='center')
