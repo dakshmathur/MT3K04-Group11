@@ -363,7 +363,7 @@ def dashboard_state():
     button_logout.place(relx=0.75, rely=0.4, anchor='center')
 
     # Egram buttom
-    button_egram = tk.Button(frame, text="Egram", command=lambda: eg.init())
+    button_egram = tk.Button(frame, text="Egram", command=lambda: eg.main())
     button_egram.place(relx=0.25, rely=0.4, anchor='center')
 
 # Define the clear entire window
