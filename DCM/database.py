@@ -754,7 +754,6 @@ def update_mode_parameters(id, mode, updated_values):
             'DOOR': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'atrial_amplitude', 'atrial_pulse_width', 'ventricular_amplitude', 'ventricular_pulse_width', 'maximum_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'],
             'DDIR': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'atrial_amplitude', 'atrial_pulse_width', 'atrial_sensitivity', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'arp', 'pvarp', 'maximum_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'],
             'DDDR': ['lower_rate_limit', 'upper_rate_limit', 'fixed_av_delay', 'dynamic_av_delay', 'sensed_av_delay_offset', 'atrial_amplitude', 'atrial_pulse_width', 'atrial_sensitivity', 'ventricular_amplitude', 'ventricular_pulse_width', 'ventricular_sensitivity', 'vrp', 'arp', 'pvarp', 'hysteresis', 'rate_smoothing', 'maximum_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'atr_duration', 'atr_fallback_mode', 'atr_fallback_time', 'pvarp_extension'],
-            # Add mappings for other modes
         }
            
         # Select the columns for the current mode

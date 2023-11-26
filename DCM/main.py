@@ -3,8 +3,9 @@ import user as usr                                                      #Import 
 import validate_param as vp                                             #Import validate_param to validate parameters
 import database as db                                                   #Import database module for database management
 from settings import States, DATABASE_DIR, RATE_SMOOTHING_OPTIONS       #Import settings for parameters
-from settings import PARAMETER_UNITS
+from settings import PARAMETER_UNITS, ACTIVITY_THRESHOLD_OPTIONS
 import ui as ui                                                         #Import ui for GUI construction
+import egram as eg                                                      #Import egram for egram construction
 
 import wmi                                              #Import Windows Management Instrumentation for checking windows usb connections
 import io                                               #Import input output
@@ -191,21 +192,25 @@ def dashboard_state():
     def submit_parameters(entry_values):
         updated_values = {key: val.get() for key, val in entry_values.items()}
 
-        if not pvarp_ext_enabled.get():
-            updated_values["PVARP EXTENSION"] = 'Off'
+        if (mode.get() == "VDD" or mode.get() == "DDD"):
+            if not pvarp_ext_enabled.get():
+                updated_values["PVARP EXTENSION"] = 'Off'
 
-        if not dynamic_av_delay_enabled.get():
-            updated_values["DYNAMIC AV DELAY"] = 'Off'
-        else: 
-            updated_values["DYNAMIC AV DELAY"] = 'On'
+            if not dynamic_av_delay_enabled.get():
+                updated_values["DYNAMIC AV DELAY"] = 'Off'
+            else: 
+                updated_values["DYNAMIC AV DELAY"] = 'On'
+            
+            if not atr_mode_enabled.get():
+                updated_values["ATR FALLBACK MODE"] = 'Off'
+            else:
+                updated_values["ATR FALLBACK MODE"] = 'On'
 
-        if not atr_mode_enabled.get():
-            updated_values["ATR FALLBACK MODE"] = 'Off'
-        else:
-            updated_values["ATR FALLBACK MODE"] = 'On'
+        print(updated_values)
     
         if (vp.is_valid_parameters(updated_values, mode.get())):
             db.update_mode_parameters(current_user_id, mode.get(), updated_values)
+            cm.pack_data(mode.get(), updated_values)
 
     def update_parameters():
 
@@ -260,9 +265,9 @@ def dashboard_state():
         mode_parameters = db.get_mode_parameters(current_user_id)
 
         for parameter in mode_parameters:
-            label = parameter + ((' (' + PARAMETER_UNITS[db.upper_to_lower(parameter)] + ')') if parameter != '' else '')
-            label_parameter = tk.Label(frame2, text=label)      
-            label_parameter.pack()    
+            label = parameter + (' (' + PARAMETER_UNITS[db.upper_to_lower(parameter)] + ')') if PARAMETER_UNITS[db.upper_to_lower(parameter)] != '' else parameter
+            label_parameter = tk.Label(frame2, text=label)
+            label_parameter.pack()
 
             # Dropdowns
             if parameter == "RATE SMOOTHING":
@@ -270,6 +275,11 @@ def dashboard_state():
                 rate_smoothing_var.set(mode_parameters[parameter])
                 entry = tk.OptionMenu(frame2, rate_smoothing_var, *RATE_SMOOTHING_OPTIONS)
                 entry_values[parameter] = rate_smoothing_var
+            elif parameter == "ACTIVITY THRESHOLD":
+                activity_threshold_var = tk.StringVar(frame2)
+                activity_threshold_var.set(mode_parameters[parameter])
+                entry = tk.OptionMenu(frame2,activity_threshold_var, *ACTIVITY_THRESHOLD_OPTIONS)
+                entry_values[parameter] = activity_threshold_var
 
             # Checkboxes
             elif parameter == "DYNAMIC AV DELAY":
@@ -351,6 +361,10 @@ def dashboard_state():
     # Logout button if logout button is pressed welcome screen is shown
     button_logout = tk.Button(frame, text="Logout", command=lambda: check_button())
     button_logout.place(relx=0.75, rely=0.4, anchor='center')
+
+    # Egram buttom
+    button_egram = tk.Button(frame, text="Egram", command=lambda: eg.init())
+    button_egram.place(relx=0.25, rely=0.4, anchor='center')
 
 # Define the clear entire window
 def clear_frame(fr):

@@ -21,6 +21,8 @@ class States(Enum):
 
 RATE_SMOOTHING_OPTIONS = ["Off", "3%", "6%", "9%", "12%", "15%", "18%", "21%", "25%"]
 
+ACTIVITY_THRESHOLD_OPTIONS = ["V-Low", "Low", "Med-Low", "Med", "Med-High", "High", "V-High"]
+
 NOMINAL_VALUES = {
     "mode": "DDD",
     "lower_rate_limit": 60,
