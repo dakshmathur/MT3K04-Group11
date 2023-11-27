@@ -13,7 +13,7 @@ MAX_USER_COUNT = 10
 DATABASE_DIR = "DCM\\data.db"
 
 RUNNING_DIR = os.path.dirname(os.path.abspath(__file__))
-BACKGROUND_IMAGE_DIR = os.path.join(RUNNING_DIR, 'backroundfinal.jpg')
+BACKGROUND_IMAGE_DIR = os.path.join(RUNNING_DIR, 'NewBackround.jpg')
 
 class States(Enum):
     WELCOME = 0

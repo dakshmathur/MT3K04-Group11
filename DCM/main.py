@@ -123,15 +123,15 @@ def welcome_state():
             entry_password.delete(0, tk.END)
 
     # User and password labels and entry boxes
-    label_username = tk.Label(frame, text="Username:", bg='#20202A', fg='white')
+    label_username = tk.Label(frame, text="Username", bg='#414347', fg='white', font='Helvetica 12 bold')
     entry_username = tk.Entry(frame)
 
-    label_password = tk.Label(frame, text="Password:", bg='#20202A', fg='white')
+    label_password = tk.Label(frame, text="Password", bg='#414347', fg='white', font='Helvetica 12 bold')
     entry_password = tk.Entry(frame, show="*")
 
-    # Login and register buttons
-    button_login = tk.Button(frame, text="Login", command=login_user, bg="white", fg="black")
-    button_register = tk.Button(frame, text="Register", command=register_user, bg="white", fg="black")
+    # Login and register buttonsn
+    button_login = tk.Button(frame, text="  Login  ", command=login_user, bg="#212429", fg="white", font='Helvetica 10 bold')
+    button_register = tk.Button(frame, text=" Register ", command=register_user, bg="#212429", fg="white", font='Helvetica 10 bold')
 
     # Pack the login and register widgets
     label_username.place(relx=0.5, rely=0.2, anchor='center')
@@ -144,7 +144,7 @@ def welcome_state():
     button_register.place(relx=0.58, rely=0.65, anchor='center')
 
     # Version num/instatution
-    label_version = tk.Label(frame, text="Version 0.1.6\tMcMaster University", bg='#20202A', fg='white')
+    label_version = tk.Label(frame, text="Version 0.1.6\tMcMaster University", bg='#414347', fg='white', font='Helvetica 8')
     label_version.place(relx=0.5, rely=0.95, anchor='center')
 
 # This function deines the dashboard state 
@@ -163,18 +163,18 @@ def dashboard_state():
     # Connected/not connected device label
     if connected:
         serial_number = extracted_string
-        label_connected = tk.Label(frame, text=f"Communicating with Device, SN: {serial_number}", bg="green", fg="white")
+        label_connected = tk.Label(frame, text=f"Communicating with Device, SN: {serial_number}", bg='#414347', fg="green", font='Helvetica 12 bold')
     elif not connected:
-        label_connected = tk.Label(frame, text="Not Communicating with Device", bg="red", fg="white")
+        label_connected = tk.Label(frame, text="Not Communicating with Device", bg='#414347', fg="red", font='Helvetica 12 bold')
 
     # Place label in frame
     label_connected.place(relx=0.5, rely=0.05, anchor='center')
 
     # New/old device label
     if new_device:
-        label_new_device = tk.Label(frame, text="New Device", bg="green", fg="white")
+        label_new_device = tk.Label(frame, text="New Device", bg='#414347', fg="green", font='Helvetica 12 bold')
     elif not new_device:
-        label_new_device = tk.Label(frame, text="Not a New Device", bg="red", fg="white")
+        label_new_device = tk.Label(frame, text="Not a New Device", bg='#414347', fg="red", font='Helvetica 12 bold')
 
     # Place label in frame
     label_new_device.place(relx=0.5, rely=0.15, anchor='center')
@@ -281,7 +281,7 @@ def dashboard_state():
             label_parameter = tk.Label(scrollable_frame, text=label)
             label_parameter.pack()
 
-            # Dropdowns
+            # Dropdownsn
             if parameter == "RATE SMOOTHING":
                 rate_smoothing_var = tk.StringVar(scrollable_frame)
                 rate_smoothing_var.set(mode_parameters[parameter])
@@ -364,7 +364,9 @@ def dashboard_state():
     # Place the mode and menu
     mode_options = db.get_all_modes()
     mode_menu = tk.OptionMenu(frame, mode, *mode_options)
-    button_mode = tk.Button(frame, text="Set Mode", command=update_parameters)
+    mode_menu.config(bg="#212429", fg="white", activebackground='#8f8b81', activeforeground="white", font='Helvetica 10 bold')
+    mode_menu["menu"].config(bg="#212429", fg="white", activebackground='#8f8b81', activeforeground="white", font='Helvetica 10 bold')
+    button_mode = tk.Button(frame, text="Set Mode", command=update_parameters,  bg="#212429", fg="white", font='Helvetica 10 bold')
     mode_menu.place(relx=0.20, rely=0.25, anchor='e')
     button_mode.place(relx=0.80, rely=0.25, anchor='w')
 
@@ -372,11 +374,11 @@ def dashboard_state():
     update_parameters()
 
     # Logout button if logout button is pressed welcome screen is shown
-    button_logout = tk.Button(frame, text="Logout", command=lambda: check_button())
+    button_logout = tk.Button(frame, text="Logout", command=lambda: check_button(),  bg="#212429", fg="white", font='Helvetica 10 bold')
     button_logout.place(relx=0.80, rely=0.35, anchor='w')
 
     # Egram buttom
-    button_egram = tk.Button(frame, text="Egram", command=lambda: eg.main())
+    button_egram = tk.Button(frame, text="Egram", command=lambda: eg.main(),  bg="#212429", fg="white", font='Helvetica 10 bold')
     button_egram.place(relx=0.80, rely=0.44, anchor='w')
 
 # Define the clear entire window

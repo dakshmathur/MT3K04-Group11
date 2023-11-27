@@ -37,15 +37,15 @@ def render_backround(window):
     canvas.event_generate("<Configure>")
     
     #Create frames used for login/displaying parameter values
-    frame = tk.Frame(canvas, bg='#20202A')
+    frame = tk.Frame(canvas, bg='#414347')
     frame.place(relx=0.5, rely=0.5, relwidth=0.75, relheight=0.75, anchor='center')
 
 
     # Create a frame which will contain the scrollbar and the canvas
-    frame2 = tk.Frame(canvas, bg='#8f8b81')
+    frame2 = tk.Frame(canvas, bg= '#F0F0F0')
     
     # Create a canvas inside frame2 for scrolling
-    canvas_frame2 = tk.Canvas(frame2,bg='#8f8b81')
+    canvas_frame2 = tk.Canvas(frame2,bg='#F0F0F0')
     canvas_frame2.pack(side="left", fill="both", expand=True)
     canvas_frame2.pack_forget()
 
@@ -57,7 +57,7 @@ def render_backround(window):
     canvas_frame2.configure(yscrollcommand=scrollbar.set)
 
     # Create a frame inside the canvas for your widgets
-    scrollable_frame = tk.Frame(canvas_frame2,bg='#8f8b81')
+    scrollable_frame = tk.Frame(canvas_frame2,bg='#F0F0F0')
 
     # Add the scrollable_frame to the canvas
     canvas_frame2.create_window((0, 0),window=scrollable_frame, anchor='n')
