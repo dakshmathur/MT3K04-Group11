@@ -222,7 +222,7 @@ def dashboard_state():
     
         if (vp.is_valid_parameters(updated_values, mode.get())):
             db.update_mode_parameters(current_user_id, mode.get(), updated_values)
-            cm.pack_data(mode.get(), updated_values)
+            #cm.pack_data(mode.get(), updated_values)
 
     def update_parameters():
 

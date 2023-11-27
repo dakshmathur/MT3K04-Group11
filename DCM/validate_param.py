@@ -3,6 +3,9 @@ from tkinter import messagebox
 # Validate the parameters
 def is_valid_parameters(updated_values, mode):
 
+    print(updated_values)
+    print(mode)
+
     error_message = ""
 
     # Access values by their keys
@@ -14,7 +17,7 @@ def is_valid_parameters(updated_values, mode):
     if URL != False:
             error_message += URL
 
-    if mode == "AAT":
+    if mode[0:3] == "AAT":
         AA = validate_pa(updated_values['ATRIAL AMPLITUDE'])
         if AA != False:
             error_message += AA
@@ -35,7 +38,7 @@ def is_valid_parameters(updated_values, mode):
         if PVARP != False:
             error_message += PVARP
 
-    if mode == "VVT":
+    if mode[0:3] == "VVT":
         VA = validate_pa(updated_values['VENTRICULAR AMPLITUDE'])
         if VA != False:
             error_message += VA
@@ -52,7 +55,7 @@ def is_valid_parameters(updated_values, mode):
         if VRP != False:
             error_message += VRP
 
-    if mode == "AOO":
+    if mode[0:3] == "AOO":
         AA = validate_pa(updated_values['ATRIAL AMPLITUDE'])
         if AA != False:
             error_message += AA
@@ -61,7 +64,7 @@ def is_valid_parameters(updated_values, mode):
         if APW != False:
             error_message += APW
         
-    if mode == "VOO":
+    if mode[0:3] == "VOO":
         VA = validate_pa(updated_values['VENTRICULAR AMPLITUDE'])
         if VA != False:
             error_message += VA
@@ -70,7 +73,7 @@ def is_valid_parameters(updated_values, mode):
         if VPW != False:
             error_message += VPW
 
-    if mode == "AAI":
+    if mode[0:3] == "AAI":
         AA = validate_pa(updated_values['ATRIAL AMPLITUDE'])
         if AA != False:
             error_message += AA
@@ -95,7 +98,7 @@ def is_valid_parameters(updated_values, mode):
         if HYS != False:
             error_message += HYS
         
-    if mode == "VVI":
+    if mode[0:3] == "VVI":
         VA = validate_pa(updated_values['VENTRICULAR AMPLITUDE'])
         if VA != False:
             error_message += VA
@@ -116,7 +119,7 @@ def is_valid_parameters(updated_values, mode):
         if HYS != False:
             error_message += HYS
 
-    if mode == "VDD":
+    if mode[0:3] == "VDD":
         FAVD = validate_favd(updated_values['FIXED AV DELAY'])
         if FAVD != False:
             error_message += FAVD
@@ -149,7 +152,7 @@ def is_valid_parameters(updated_values, mode):
         if ATRFT != False:
             error_message += ATRFT
 
-    if mode == "DOO":
+    if mode[0:3] == "DOO":
         FAVD = validate_favd(updated_values['FIXED AV DELAY'])
         if FAVD != False:
             error_message += FAVD
@@ -170,7 +173,7 @@ def is_valid_parameters(updated_values, mode):
         if VPW != False:
             error_message += VPW
 
-    if mode == "DDI":
+    if mode[0:3] == "DDI":
         FAVD = validate_favd(updated_values['FIXED AV DELAY'])
         if FAVD != False:
             error_message += FAVD
@@ -211,7 +214,7 @@ def is_valid_parameters(updated_values, mode):
         if VRP != False:
             error_message += VRP
 
-    if mode == "DDD":
+    if mode[0:3] == "DDD":
         FAVD = validate_favd(updated_values['FIXED AV DELAY'])
         if FAVD != False:
             error_message += FAVD
@@ -271,6 +274,26 @@ def is_valid_parameters(updated_values, mode):
         ATRFT = validate_atrft(updated_values['ATR FALLBACK TIME'])
         if ATRFT != False:
             error_message += ATRFT
+
+
+    print(mode[-1])
+    if mode[-1] == "R":
+        MSR = validate_msr(updated_values['MAXIMUM SENSOR RATE'])
+        if MSR != False:
+            error_message += MSR
+        
+        RT = validate_rt(updated_values['REACTION TIME'])
+        if RT != False:
+            error_message += RT
+
+        RF = validate_rf(updated_values['RESPONSE FACTOR'])
+        if RF != False:
+            error_message += RF
+        
+        RET = validate_ret(updated_values['RECOVERY TIME'])
+        if RET != False:
+            error_message += RET
+    
 
     if error_message != "":
         messagebox.showerror("Error", error_message)
@@ -486,3 +509,60 @@ def validate_savd(value):
         return "Sensed AV Delay Offset must be a multiple of 10ms between -100ms and -10ms.\n"
     else:
         return False
+    
+# Validate the Maximum Sensor Rate value entered by the user
+def validate_msr(value):
+    try:
+        val = float(value)
+    except ValueError:
+        return "Maximum Sensor Rate must be a number.\n"
+    
+    if (val < 50) or (val > 175):
+        return "Maximum Sensor Rate must be between 50ppm and 175ppm.\n"
+    elif (val % 5 != 0):
+        return "Maximum Sensor Rate must be a multiple of 5ppm between 50ppm and 175ppm.\n"
+    else:
+        return False
+    
+# Validate the Reaction Time value entered by the user
+def validate_rt(value):
+    try:
+        val = float(value)
+    except ValueError:
+        return "Reaction Time must be a number.\n"
+    
+    if (val < 10) or (val > 50):
+        return "Reaction Time must be between 10s and 50s.\n"
+    elif (val % 10 != 0):
+        return "Reaction Time must be a multiple of 10s between 10s and 50s.\n"
+    else:
+        return False
+    
+# Validate the Response Factor value entered by the user
+def validate_rf(value):
+    try:
+        val = float(value)
+    except ValueError:
+        return "Response Factor must be a number.\n"
+    
+    if (val < 1) or (val > 16):
+        return "Response Factor must be between 1 and 16.\n"
+    elif (val % 1 != 0):
+        return "Response Factor must be a multiple of 1 between 1 and 16.\n"
+    else:
+        return False
+    
+# Validate the Recovery Time value entered by the user
+def validate_ret(value):
+    try:
+        val = float(value)
+    except ValueError:
+        return "Recovery Time must be a number.\n"
+    
+    if (val < 2) or (val > 16):
+        return "Recovery Time must be between 2min and 16min.\n"
+    elif (val % 1 != 0):
+        return "Recovery Time must be a multiple of 1min between 2.5min and 16min.\n"
+    else:
+        return False
+    
