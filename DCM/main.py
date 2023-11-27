@@ -61,7 +61,7 @@ else:
 #Setup the master window using tkinter
 window = tk.Tk()
 window.title("Pacemaker Device Controller-Monitor")
-window.geometry("1500x900") #750x450
+window.geometry("750x450") 
 
 #Setup the database for storing data
 connector = sqlite3.connect(DATABASE_DIR)
@@ -75,7 +75,7 @@ except:
     pass
 
 #call function to render frames and canvas
-canvas, frame, frame2 = ui.render_backround(window)
+canvas, frame, frame2, canvas_frame2, scrollable_frame = ui.render_backround(window)
 
 # Define the current state of the application
 current_state = tk.StringVar()
@@ -99,8 +99,9 @@ def welcome_state():
             for widget in frame.winfo_children():
                 widget.destroy()
 
-            #place frame 2 which contains parameter values
-            frame2.place(in_=frame, anchor='center', relx = .5, rely= .5)
+            # #place frame 2 which contains parameter values
+            frame2.place(relx=0.5, rely=0.55, relwidth=0.25, relheight=0.55, anchor='center')
+            canvas_frame2.pack(side="left", fill="both", expand=True)
             
             # Cache the current user as a global variable
             global current_user_id
@@ -149,6 +150,16 @@ def welcome_state():
 # This function deines the dashboard state 
 def dashboard_state():
 
+    def configure_scrollable_frame(event):
+        # You might want to subtract a little if you want the scrollbar to be inside the frame
+        new_width = canvas_frame2.winfo_width() 
+        scrollable_frame.config(width=new_width)
+        # Make sure the canvas_frame2 scrollregion is updated to encompass the new size of scrollable_frame
+        canvas_frame2.configure(scrollregion=canvas_frame2.bbox("all"))
+
+    # Bind this function to the canvas_frame2 configuration event
+    canvas_frame2.bind("<Configure>", configure_scrollable_frame)
+
     # Connected/not connected device label
     if connected:
         serial_number = extracted_string
@@ -187,6 +198,7 @@ def dashboard_state():
         
     if (mode.get() == "DDD" or mode.get() == "DDDR"):
          sensed_av_delay_enabled = tk.BooleanVar(value=db.lookup_parameter_value(current_user_id, mode.get(), "sensed_av_delay_offset"))
+
 
     # Submit the parameters
     def submit_parameters(entry_values):
@@ -255,7 +267,7 @@ def dashboard_state():
         if (mode.get() == "DDD"):
             sensed_av_delay_enabled.set(db.lookup_parameter_value(current_user_id, mode.get(), "sensed_av_delay_offset"))
 
-        for widget in frame2.winfo_children():
+        for widget in scrollable_frame.winfo_children():
             widget.forget()
 
         db.update_mode(current_user_id, mode.get().lower())
@@ -266,53 +278,53 @@ def dashboard_state():
 
         for parameter in mode_parameters:
             label = parameter + (' (' + PARAMETER_UNITS[db.upper_to_lower(parameter)] + ')') if PARAMETER_UNITS[db.upper_to_lower(parameter)] != '' else parameter
-            label_parameter = tk.Label(frame2, text=label)
+            label_parameter = tk.Label(scrollable_frame, text=label)
             label_parameter.pack()
 
             # Dropdowns
             if parameter == "RATE SMOOTHING":
-                rate_smoothing_var = tk.StringVar(frame2)
+                rate_smoothing_var = tk.StringVar(scrollable_frame)
                 rate_smoothing_var.set(mode_parameters[parameter])
-                entry = tk.OptionMenu(frame2, rate_smoothing_var, *RATE_SMOOTHING_OPTIONS)
+                entry = tk.OptionMenu(scrollable_frame, rate_smoothing_var, *RATE_SMOOTHING_OPTIONS)
                 entry_values[parameter] = rate_smoothing_var
             elif parameter == "ACTIVITY THRESHOLD":
-                activity_threshold_var = tk.StringVar(frame2)
+                activity_threshold_var = tk.StringVar(scrollable_frame)
                 activity_threshold_var.set(mode_parameters[parameter])
-                entry = tk.OptionMenu(frame2,activity_threshold_var, *ACTIVITY_THRESHOLD_OPTIONS)
+                entry = tk.OptionMenu(scrollable_frame,activity_threshold_var, *ACTIVITY_THRESHOLD_OPTIONS)
                 entry_values[parameter] = activity_threshold_var
 
             # Checkboxes
             elif parameter == "DYNAMIC AV DELAY":
-                checkbox_dynamic_av_delay = tk.Checkbutton(frame2, text="Enable", var=dynamic_av_delay_enabled, command=toggle_dynamic_av_delay)
+                checkbox_dynamic_av_delay = tk.Checkbutton(scrollable_frame, text="Enable", var=dynamic_av_delay_enabled, command=toggle_dynamic_av_delay)
                 checkbox_dynamic_av_delay.pack()
                 entry_values[parameter] = dynamic_av_delay_enabled
             elif parameter == "ATR FALLBACK MODE":
-                checkbox_atr_mode = tk.Checkbutton(frame2, text="Enable", var=atr_mode_enabled, command=toggle_atr_mode)
+                checkbox_atr_mode = tk.Checkbutton(scrollable_frame, text="Enable", var=atr_mode_enabled, command=toggle_atr_mode)
                 checkbox_atr_mode.pack()
                 entry_values[parameter] = atr_mode_enabled
 
             # Checkboxes + Input Boxes
             elif parameter == "PVARP EXTENSION":
-                entry_pvarp_ext = tk.Entry(frame2, textvariable=entry_values)
+                entry_pvarp_ext = tk.Entry(scrollable_frame, textvariable=entry_values)
                 entry_pvarp_ext.insert(0, mode_parameters[parameter])
                 toggle_pvarp_ext()
-                checkbox_pvarp_ext = tk.Checkbutton(frame2, text="Enable", var=pvarp_ext_enabled, command=toggle_pvarp_ext)
+                checkbox_pvarp_ext = tk.Checkbutton(scrollable_frame, text="Enable", var=pvarp_ext_enabled, command=toggle_pvarp_ext)
                 checkbox_pvarp_ext.pack()
                 entry_pvarp_ext.pack()
                 entry_values[parameter] = entry_pvarp_ext
             elif parameter == "HYSTERESIS":
-                entry_hys = tk.Entry(frame2, textvariable=entry_values)
+                entry_hys = tk.Entry(scrollable_frame, textvariable=entry_values)
                 entry_hys.insert(0, mode_parameters[parameter])
                 toggle_hys()
-                checkbox_hys = tk.Checkbutton(frame2, text="Enable", var=hys_enabled, command=toggle_hys)
+                checkbox_hys = tk.Checkbutton(scrollable_frame, text="Enable", var=hys_enabled, command=toggle_hys)
                 checkbox_hys.pack()
                 entry_hys.pack()
                 entry_values[parameter] = entry_hys
             elif parameter == "SENSED AV DELAY OFFSET":
-                entry_sensed_av_delay = tk.Entry(frame2, textvariable=entry_values)
+                entry_sensed_av_delay = tk.Entry(scrollable_frame, textvariable=entry_values)
                 entry_sensed_av_delay.insert(0, mode_parameters[parameter]) 
                 toggle_sensed_av_delay()
-                checkbox_sensed_av_delay= tk.Checkbutton(frame2, text="Enable", var=sensed_av_delay_enabled , command=toggle_sensed_av_delay)
+                checkbox_sensed_av_delay= tk.Checkbutton(scrollable_frame, text="Enable", var=sensed_av_delay_enabled , command=toggle_sensed_av_delay)
                 checkbox_sensed_av_delay.pack()
                 entry_sensed_av_delay.pack()
                 entry_values[parameter] = entry_sensed_av_delay
@@ -320,13 +332,13 @@ def dashboard_state():
             # Input Boxes
             else:
                 entry_value = tk.StringVar()
-                entry = tk.Entry(frame2, textvariable=entry_value)
+                entry = tk.Entry(scrollable_frame, textvariable=entry_value)
                 entry.insert(0, mode_parameters[parameter])
                 entry_values[parameter] = entry_value
 
             entry.pack()
 
-        button_submit = tk.Button(frame2, text="Submit", command=lambda: submit_parameters(entry_values))
+        button_submit = tk.Button(scrollable_frame, text="Submit", command=lambda: submit_parameters(entry_values))
         button_submit.pack()
 
     #This function checks if the logout button is pressed
@@ -346,25 +358,26 @@ def dashboard_state():
             for widget in frame.winfo_children():
                     widget.destroy()
             frame2.place_forget()
+            canvas_frame2.place_forget()
             change_state(States.WELCOME)
 
     # Place the mode and menu
     mode_options = db.get_all_modes()
     mode_menu = tk.OptionMenu(frame, mode, *mode_options)
     button_mode = tk.Button(frame, text="Set Mode", command=update_parameters)
-    mode_menu.place(relx=0.25, rely=0.25, anchor='center')
-    button_mode.place(relx=0.75, rely=0.25, anchor='center')
+    mode_menu.place(relx=0.20, rely=0.25, anchor='e')
+    button_mode.place(relx=0.80, rely=0.25, anchor='w')
 
     # Render the parameters
     update_parameters()
 
     # Logout button if logout button is pressed welcome screen is shown
     button_logout = tk.Button(frame, text="Logout", command=lambda: check_button())
-    button_logout.place(relx=0.75, rely=0.4, anchor='center')
+    button_logout.place(relx=0.80, rely=0.35, anchor='w')
 
     # Egram buttom
     button_egram = tk.Button(frame, text="Egram", command=lambda: eg.init())
-    button_egram.place(relx=0.25, rely=0.4, anchor='center')
+    button_egram.place(relx=0.80, rely=0.45, anchor='w')
 
 # Define the clear entire window
 def clear_frame(fr):
@@ -379,7 +392,7 @@ def change_state(new_state):
 
     # Clear the window
     clear_frame(frame)
-    clear_frame(frame2)
+    clear_frame(scrollable_frame)
     
     # Render the new state
     if new_state == States.WELCOME:
