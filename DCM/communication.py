@@ -3,10 +3,7 @@ import struct
 import database as db
 from settings import SER_BAUD_RATE, SER_COM_PORT,MODE_MAP, NOMINAL_VALUES, ACTIVITY_THRESHOLD_MAP
 
-def pack_array(updated_values, mode):
-    print("\n\n")
-    print("Updated Values ORIGINAL", updated_values)
-        
+def pack_array(updated_values, mode):       
     # Expand updated_values to include all the fields that don't get updated for that mode
     updated_values_EXPANDED = {}
     keys = list(NOMINAL_VALUES.keys())[1:]  # Exlude mode key
@@ -16,9 +13,6 @@ def pack_array(updated_values, mode):
             updated_values_EXPANDED[uppercase_key] = updated_values[uppercase_key]
         else:
             updated_values_EXPANDED[uppercase_key] = NOMINAL_VALUES[key]
-    
-    print("\n\n")
-    print("Updated Values EXPANDED", updated_values_EXPANDED)
 
     values = updated_values_EXPANDED.copy()
     values['MODE'] = mode
@@ -30,8 +24,6 @@ def pack_array(updated_values, mode):
     for key in intify_values:
         packed_array.append(intify_values[key])
 
-    print("\n\n")
-    print("Packed Array FINAL", packed_array)
     return packed_array
 
 def intify(values):
@@ -76,6 +68,7 @@ def txSer(updated_values, mode):
     try:
         baudrate = SER_BAUD_RATE
         port = SER_COM_PORT
+        print("Now Sending: ", dataTuple, " to port: ", port)
         with serial.Serial(port, baudrate=baudrate, timeout=1) as ser:
             ser.write(dataPacked)
     except serial.SerialException as e:
