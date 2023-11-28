@@ -1,6 +1,9 @@
 import os
 from enum import Enum
 
+SER_COM_PORT = 'COM3'
+SER_BAUD_RATE = 115200
+
 PASSWORD_RULES = {
     'min_length': 8,
     'special_chars': r'[!@#$%^&*()-_+=]',

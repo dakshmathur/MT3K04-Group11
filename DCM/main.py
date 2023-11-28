@@ -4,6 +4,7 @@ import validate_param as vp                                             #Import 
 import database as db                                                   #Import database module for database management
 from settings import States, DATABASE_DIR, RATE_SMOOTHING_OPTIONS       #Import settings for parameters
 from settings import PARAMETER_UNITS, ACTIVITY_THRESHOLD_OPTIONS
+from settings import SER_COM_PORT, SER_BAUD_RATE
 import ui as ui                                                         #Import ui for GUI construction
 import egram as eg                                                      #Import egram for egram construction
 import communication as cm                                            #Import communication for serial communication
@@ -19,6 +20,7 @@ connected = False                                       #Checks if the device is
 new_device = False                                      #Checks if a new device is connected
 logout_button_pressed = False                           #checks if the logout button is pressed
 current_user_id = None                                  #Stores the current user data
+
 
 ##CHECK IF BOARD IS CONNECTED
 #Initialize a WMI connection
@@ -221,8 +223,9 @@ def dashboard_state():
     
         if (vp.is_valid_parameters(updated_values, mode.get())):
             db.update_mode_parameters(current_user_id, mode.get(), updated_values)
-
-            cm.pack_array(updated_values, mode.get())
+            cm.txSer(updated_values, mode.get(), SER_COM_PORT)
+            #var = cm.pack_array(updated_values, mode.get())
+            #print("/n", var, "/n")
 
     def update_parameters():
 
