@@ -1,7 +1,7 @@
 import serial
 import struct
 import database as db
-from settings import SER_BAUD_RATE, MODE_MAP, NOMINAL_VALUES, ACTIVITY_THRESHOLD_MAP
+from settings import SER_BAUD_RATE, SER_COM_PORT,MODE_MAP, NOMINAL_VALUES, ACTIVITY_THRESHOLD_MAP
 
 def pack_array(updated_values, mode):
     print("\n\n")
@@ -66,16 +66,42 @@ def intify(values):
         
     return values_intify
 
-def txSer(updated_values, mode, port):
+def txSer(updated_values, mode):
     dataAray = pack_array(updated_values, mode)
     dataAray.append([0,0])
     dataTuple = tuple(dataAray)
-    dataStruct = struct.Struct('<<BBBBHBbfBfBffHHHHBBBHBBBBBBB')
+    dataStruct = struct.Struct('<BBBBHBbfBfBffHHHHBBBHBBBBBBB')
     dataPacked = dataStruct.pack(*dataTuple)
 
     try:
         baudrate = SER_BAUD_RATE
+        port = SER_COM_PORT
         with serial.Serial(port, baudrate=baudrate, timeout=1) as ser:
             ser.write(dataPacked)
     except serial.SerialException as e:
         print(f"Error opening serial port: {e}")
+
+def rxSer():
+    dataStruct = struct.Struct('<BBBBHBbfBfBffHHHHBBBHBBBBBdd')
+
+    try:
+        baudrate = SER_BAUD_RATE
+        port = SER_COM_PORT
+        with serial.Serial(port, baudrate=baudrate, timeout=1) as ser:
+            print(dataTuple) #DEBUGGING
+            dataReceived = ser.read(dataStruct.size)
+
+            if dataReceived:
+                dataTuple = dataStruct.unpack(dataReceived)
+                print(dataTuple) #DEBUGGING
+                return dataTuple
+            else:
+                print("No data received")
+                return None
+    except serial.SerialException as e:
+        print(f"Error reading from serial port: {e}")
+        return None
+
+received_data = txSer()
+if received_data is not None:
+    print("Recievd data: ", received_data)

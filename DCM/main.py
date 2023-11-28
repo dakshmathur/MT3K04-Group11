@@ -223,9 +223,10 @@ def dashboard_state():
     
         if (vp.is_valid_parameters(updated_values, mode.get())):
             db.update_mode_parameters(current_user_id, mode.get(), updated_values)
-            cm.txSer(updated_values, mode.get(), SER_COM_PORT)
+            cm.txSer(updated_values, mode.get())
             #var = cm.pack_array(updated_values, mode.get())
             #print("/n", var, "/n")
+            cm.rxSer()
 
     def update_parameters():
 
