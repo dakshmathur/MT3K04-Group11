@@ -6,6 +6,7 @@ from settings import States, DATABASE_DIR, RATE_SMOOTHING_OPTIONS       #Import 
 from settings import PARAMETER_UNITS, ACTIVITY_THRESHOLD_OPTIONS
 import ui as ui                                                         #Import ui for GUI construction
 import egram as eg                                                      #Import egram for egram construction
+import communication as cm                                            #Import communication for serial communication
 
 import wmi                                              #Import Windows Management Instrumentation for checking windows usb connections
 import io                                               #Import input output
@@ -217,12 +218,11 @@ def dashboard_state():
                 updated_values["ATR FALLBACK MODE"] = 'Off'
             else:
                 updated_values["ATR FALLBACK MODE"] = 'On'
-
-        print(updated_values)
     
         if (vp.is_valid_parameters(updated_values, mode.get())):
             db.update_mode_parameters(current_user_id, mode.get(), updated_values)
-            #cm.pack_data(mode.get(), updated_values)
+
+            cm.pack_array(updated_values, mode.get())
 
     def update_parameters():
 

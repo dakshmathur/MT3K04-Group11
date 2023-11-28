@@ -3,9 +3,6 @@ from tkinter import messagebox
 # Validate the parameters
 def is_valid_parameters(updated_values, mode):
 
-    print(updated_values)
-    print(mode)
-
     error_message = ""
 
     # Access values by their keys
@@ -275,8 +272,6 @@ def is_valid_parameters(updated_values, mode):
         if ATRFT != False:
             error_message += ATRFT
 
-
-    print(mode[-1])
     if mode[-1] == "R":
         MSR = validate_msr(updated_values['MAXIMUM SENSOR RATE'])
         if MSR != False:

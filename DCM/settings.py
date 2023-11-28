@@ -30,7 +30,6 @@ NOMINAL_VALUES = {
     "maximum_sensor_rate": 120,
     "fixed_av_delay": 150,
     "dynamic_av_delay": "Off",
-    "minimum_dynamic_av_delay": 50,
     "sensed_av_delay_offset": "Off",
     "atrial_amplitude": 5,
     "atrial_pulse_width": 1,
@@ -47,7 +46,6 @@ NOMINAL_VALUES = {
     "atr_fallback_mode": "Off",
     "atr_duration": 20,
     "atr_fallback_time": 1,
-    "ventiricular_blanking": 40,
     "activity_threshold": "Med",
     "reaction_time": 30,
     "response_factor": 8,
@@ -61,7 +59,6 @@ PARAMETER_UNITS = {
     "maximum_sensor_rate": "ppm",
     "fixed_av_delay": "ms",
     "dynamic_av_delay": "",
-    "minimum_dynamic_av_delay": "ms",
     "sensed_av_delay_offset": "ms",
     "atrial_amplitude": "V",
     "atrial_pulse_width": "ms",
@@ -78,9 +75,44 @@ PARAMETER_UNITS = {
     "atr_fallback_mode": "",
     "atr_duration": "cc",
     "atr_fallback_time": "min",
-    "ventiricular_blanking": "ms",
     "activity_threshold": "",
     "reaction_time": "sec",
     "response_factor": "",
     "recovery_time": "min"
+}
+
+MODE_MAP = {
+    "AAT": 0,
+    "VVT": 1,
+    "AOO": 2,
+    "AAI": 3,
+    "VOO": 4,
+    "VVI": 5,
+    "VDD": 6,
+    "DOO": 7,
+    "DDI": 8,
+    "DDD": 9,
+    "AOOR": 10,
+    "AAIR": 11,
+    "VOOR": 12,
+    "VVIR": 13,
+    "VDDR": 14,
+    "DOOR": 15,
+    "DDIR": 16,
+    "DDDR": 17
+}
+
+DYNAMIC_AV_DELAY_MAP = {
+    "Off": 0,
+    "On": 1
+}
+
+ACTIVITY_THRESHOLD_MAP = {
+    "V-Low": 0,
+    "Low": 1,
+    "Med-Low": 2,
+    "Med": 3,
+    "Med-High": 4,
+    "High": 5,
+    "V-High": 6
 }
