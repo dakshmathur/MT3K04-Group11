@@ -352,6 +352,14 @@ def validate_pw(value):
     except ValueError:
         return "Pulse Width must be a number.\n"
     
+    # The following is the correct PW validation. It is comment because I do not want to update communication file right now.
+    #if not ((val == 0.05) or ((val >= 0.1) and (val<=1.9))):
+    #    return "Pulse Width must be either 0.05ms, or between 0.1 and 1.9ms"
+    #elif (val % 0.1 != 0):
+    #    return "Pulse Width must be a multiple of 0.1ms between 0.1 and 1.9ms"
+    #else:
+    #    return False
+
     if not ((val >= 1) and (val <= 30)):
         return "Pulse Width must be between 1ms and 30ms.\n"
     elif (val % 1 != 0):
