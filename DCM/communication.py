@@ -3,7 +3,7 @@ import struct
 import database as db
 from settings import SER_BAUD_RATE, SER_COM_PORT,MODE_MAP, NOMINAL_VALUES, ACTIVITY_THRESHOLD_MAP
 
-def pack_array(updated_values, mode):       
+def pack_array(updated_values, mode):
     # Expand updated_values to include all the fields that don't get updated for that mode
     updated_values_EXPANDED = {}
     keys = list(NOMINAL_VALUES.keys())[1:]  # Exlude mode key
@@ -95,6 +95,6 @@ def rxSer():
         print(f"Error reading from serial port: {e}")
         return None
 
-received_data = txSer()
+received_data = rxSer()
 if received_data is not None:
     print("Recievd data: ", received_data)

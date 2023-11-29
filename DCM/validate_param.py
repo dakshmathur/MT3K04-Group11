@@ -338,10 +338,10 @@ def validate_pa(value):
 
     if (val == 0):
         return False;
-    elif ((val < 10) or (val > 700)):
-        return "Pulse Amplitude must be 0V, or between 0.1V and 7V.\n"
+    elif ((val < 10) or (val > 500)):
+        return "Pulse Amplitude must be 0V, or between 0.1V and 5V.\n"
     elif (val % 10 != 0):
-        return "Pulse Amplitude must be a multiple of 0.1V between 0.1V and 7.0V.\n" 
+        return "Pulse Amplitude must be a multiple of 0.1V between 0.1V and 5.0V.\n" 
     else:
         return False
 
