@@ -117,13 +117,17 @@ def txSer(updated_values, mode, sim_status, send_recv):
     try:
         baudrate = SER_BAUD_RATE
         port = SER_COM_PORT
-        print("Now Sending: ", dataTuple, " to port: ", port)
+        #print("Now Sending: ", dataTuple, " to port: ", port)
+        
+        dataSentArray = list(dataTuple[2:-2])
+        dataSentArrayFloat = [float(x) for x in dataSentArray]
+
         with serial.Serial(port, baudrate=baudrate, timeout=1) as ser:
             ser.write(dataPacked)
+            return dataSentArrayFloat
     except serial.SerialException as e:
         print(f"Error opening serial port: {e}")
-
-    return dataArray
+        return [0]
 
 def rxSer():
     dataStruct = struct.Struct('<HHHHHHHdHHdHHdddHHdddd')
@@ -136,19 +140,12 @@ def rxSer():
 
             if dataReceived:
                 dataTuple = dataStruct.unpack(dataReceived)
-
-                dataArray = arrayify(dataTuple)
-                return dataArray
-                
+                dataRecievedArray = list(dataTuple[:-2])
+                dataRecievedArrayFloat = [float(x) for x in dataRecievedArray]
+                return dataRecievedArrayFloat
             else:
                 print("No data received")
                 return None
     except serial.SerialException as e:
         print(f"Error reading from serial port: {e}")
         return None
-    
-def arrayify(tup):
-    arr = []
-    for i in tup:
-        arr.append(i)
-    return arr

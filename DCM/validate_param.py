@@ -295,7 +295,6 @@ def is_valid_parameters(updated_values, mode):
         messagebox.showerror("Error", message)
         return False
     else:
-        messagebox.showinfo("Success", "Parameters Updated.")
         return True
     
 # Validate the LRL value entered by the user

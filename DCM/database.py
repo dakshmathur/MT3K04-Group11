@@ -772,9 +772,12 @@ def update_mode_parameters(id, mode, updated_values):
         # Execute the query
         cursor.execute(sql_query, values)
         connect.commit()
+
+        return True    
     except Exception as e:
         # Handle any exceptions (e.g., log them, inform the user)
         print(f"Error updating mode parameters: {e}")
+        return False
 
 
 def get_all_modes():

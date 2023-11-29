@@ -1,4 +1,5 @@
 import tkinter as tk                                                    #Import tkinter for GUI Construction
+from tkinter import messagebox
 import user as usr                                                      #Import user to store user date and parameters
 import validate_param as vp                                             #Import validate_param to validate parameters
 import database as db                                                   #Import database module for database management
@@ -149,7 +150,7 @@ def welcome_state():
     button_register.place(relx=0.58, rely=0.65, anchor='center')
 
     # Version num/instatution
-    label_version = tk.Label(frame, text="Version 0.1.6\tMcMaster University", bg='#414347', fg='white', font='Helvetica 8')
+    label_version = tk.Label(frame, text="Version 0.2.0\tMcMaster University", bg='#414347', fg='white', font='Helvetica 8')
     label_version.place(relx=0.5, rely=0.95, anchor='center')
 
 # This function deines the dashboard state 
@@ -224,16 +225,18 @@ def dashboard_state():
                 updated_values["ATR FALLBACK MODE"] = 'On'  
     
         sim_status = 0
-        send_recv = 1
+        send_recv = 0
         
-        if (vp.is_valid_parameters(updated_values, mode.get())):
-            db.update_mode_parameters(current_user_id, mode.get(), updated_values)
+        is_valid = vp.is_valid_parameters(updated_values, mode.get())
+        if is_valid:
+            db_ok = db.update_mode_parameters(current_user_id, mode.get(), updated_values)
 
-            send_array = cm.txSer(updated_values, mode.get(), sim_status, send_recv)[2:-2]
-            rcv_array = cm.rxSer()[-2]
+            sent = cm.txSer(updated_values, mode.get(), sim_status, send_recv)
+            recieved = cm.rxSer()
+            txrx_ok = sent == recieved
 
-            print(send_array)
-            print(rcv_array)
+            if db_ok and txrx_ok:
+                messagebox.showinfo("Success", "Database Updated\n\nData sent successfully.\nData sent matched data recieved.")
 
     def update_parameters():
 
