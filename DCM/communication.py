@@ -28,8 +28,8 @@ def pack_array(updated_values, mode, sim_status, send_recv):
     for key in intify_values:
         packed_array.append(intify_values[key])
 
-    print(intify_values)
-    print(packed_array)
+    #print(intify_values)
+    #print(packed_array)
     return packed_array
 
 def sort_dictionary(d):
@@ -97,7 +97,7 @@ def intify(values):
 
 
     for key in values_intify:
-        if type(values_intify[key]) == int:
+        if type(values_intify[key]) == int or type(values_intify[key]) == float:
             pass
         elif '.' in values_intify[key]:
             values_intify[key] = float(values_intify[key])
@@ -108,12 +108,19 @@ def intify(values):
 
 def txSer(updated_values, mode, sim_status, send_recv):
     dataAray = pack_array(updated_values, mode, sim_status, send_recv)
+    dataAray.append(1) #LED RED AND GREEN
+    dataAray.append(1)
     dataTuple = tuple(dataAray)
-    dataStruct = struct.Struct('<BBHHHHHHHdHHdHHdddHHdd')
-    
-    print("DATA TUPLE: /n/n")
-    print(dataTuple) #DEBUGGING
+    dataStruct = struct.Struct('<BBHHHHHHHdHHdHHdddHHddBB')
     dataPacked = dataStruct.pack(*dataTuple)
+
+    # dataAray = pack_array(updated_values, mode, sim_status, send_recv)[0:3]
+    # dataAray.append(1) #LED RED AND GREEN
+    # dataAray.append(1)
+    # print("\n\n Data Array: ", dataAray)
+    # dataTuple = tuple(dataAray)
+    # dataStruct = struct.Struct('<BBHBB')
+    # dataPacked = dataStruct.pack(*dataTuple)
 
     try:
         baudrate = SER_BAUD_RATE
@@ -125,18 +132,22 @@ def txSer(updated_values, mode, sim_status, send_recv):
         print(f"Error opening serial port: {e}")
 
 def rxSer():
-    dataStruct = struct.Struct('<BBBBHBbfBfBffHHHHBBBHBBBBBdd')
+    dataStruct = struct.Struct('<HHHHHHHdHHdHHdddHHdddd')
 
     try:
         baudrate = SER_BAUD_RATE
         port = SER_COM_PORT
         with serial.Serial(port, baudrate=baudrate, timeout=1) as ser:
-            print(dataTuple) #DEBUGGING
             dataReceived = ser.read(dataStruct.size)
+            
+            #DEBUG
+            print(dataReceived)
 
             if dataReceived:
                 dataTuple = dataStruct.unpack(dataReceived)
-                print(dataTuple) #DEBUGGING
+                
+                #DEBUGGING
+                print(dataTuple) 
                 return dataTuple
             else:
                 print("No data received")
@@ -144,7 +155,3 @@ def rxSer():
     except serial.SerialException as e:
         print(f"Error reading from serial port: {e}")
         return None
-
-received_data = rxSer()
-if received_data is not None:
-    print("Recievd data: ", received_data)
