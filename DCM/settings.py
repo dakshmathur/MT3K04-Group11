@@ -85,24 +85,24 @@ PARAMETER_UNITS = {
 }
 
 MODE_MAP = {
-    "AAT": 0,
-    "VVT": 1,
-    "AOO": 2,
-    "AAI": 3,
-    "VOO": 4,
-    "VVI": 5,
-    "VDD": 6,
-    "DOO": 7,
-    "DDI": 8,
-    "DDD": 9,
-    "AOOR": 10,
-    "AAIR": 11,
-    "VOOR": 12,
-    "VVIR": 13,
-    "VDDR": 14,
-    "DOOR": 15,
-    "DDIR": 16,
-    "DDDR": 17
+    "AAT": 13,
+    "VVT": 14,
+    "AOO": 1,
+    "AAI": 2,
+    "VOO": 3,
+    "VVI": 4,
+    "VDD": 15,
+    "DOO": 5,
+    "DDI": 16,
+    "DDD": 11,
+    "AOOR": 7,
+    "AAIR": 9,
+    "VOOR": 8,
+    "VVIR": 10,
+    "VDDR": 17,
+    "DOOR": 6,
+    "DDIR": 18,
+    "DDDR": 12
 }
 
 DYNAMIC_AV_DELAY_MAP = {

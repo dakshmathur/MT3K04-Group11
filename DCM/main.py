@@ -21,6 +21,8 @@ new_device = False                                      #Checks if a new device 
 logout_button_pressed = False                           #checks if the logout button is pressed
 current_user_id = None                                  #Stores the current user data
 
+sim_status = 0
+send_recv = 0
 
 ##CHECK IF BOARD IS CONNECTED
 #Initialize a WMI connection
@@ -221,9 +223,12 @@ def dashboard_state():
             else:
                 updated_values["ATR FALLBACK MODE"] = 'On'
     
+        sim_status = 0
+        send_recv = 0
+        
         if (vp.is_valid_parameters(updated_values, mode.get())):
             db.update_mode_parameters(current_user_id, mode.get(), updated_values)
-            cm.txSer(updated_values, mode.get())
+            cm.txSer(updated_values, mode.get(), sim_status, send_recv)
             #var = cm.pack_array(updated_values, mode.get())
             #print("/n", var, "/n")
             cm.rxSer()
