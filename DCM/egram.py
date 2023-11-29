@@ -2,6 +2,7 @@ import tkinter as tk
 import serial
 import threading
 import time
+import communication as cm
 
 # Global variables to store serial data
 data1 = [1,7,5,2,7,7,2,4,6,2,6,9,0,1,7,5,2,7,7,2,4,6,2,6,9,0]
@@ -10,18 +11,13 @@ data2 = [1,7,5,5,2,7,6,2,6,9,0,1,7,7,2,4,6,2,6,9,0,2,7,7,2,4]
 # Function to read data from serial port
 def read_serial_data(serial_port, baud_rate):
     global data1, data2
-    ser = serial.Serial(serial_port, baud_rate)
-    while True:
-        if ser.inWaiting() > 0:
-            line = ser.readline().decode('utf-8').rstrip()
-            # Assuming data is comma-separated: value1,value2
-            values = line.split(',')
-            if len(values) == 2:
-                data1.append(float(values[0]))
-                data2.append(float(values[1]))
-                # Keep only the latest N data points
-                data1 = data1[-100:]
-                data2 = data2[-100:]
+    
+    res = cm.rxSer()
+    if res != None:
+        data1.append(res[-2])
+        data2.append(res[-1])
+        data1 = data1[-100:]
+        data2 = data2[-100:]
 
 # Function to draw axes and labels for each graph
 def draw_axes(canvas, y_offset, label, color):
@@ -66,12 +62,8 @@ def main():
     canvas = tk.Canvas(root, width=600, height=800)  # Adjust height for two graphs
     canvas.pack(fill=tk.BOTH, expand=True)
 
-    # Serial communication parameters
-    serial_port = 'COM8'  # Change to your port
-    baud_rate = 115200    # Change to your baud rate
-
     # Start the serial reading thread
-    serial_thread = threading.Thread(target=read_serial_data, args=(serial_port, baud_rate))
+    serial_thread = threading.Thread(target=read_serial_data)
     serial_thread.daemon = True
     serial_thread.start()
 
