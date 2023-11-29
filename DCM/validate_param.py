@@ -291,7 +291,8 @@ def is_valid_parameters(updated_values, mode):
     
 
     if error_message != "":
-        messagebox.showerror("Error", error_message)
+        message = "Send unsuccessful. Please fix the following errors:\n\n" + error_message
+        messagebox.showerror("Error", message)
         return False
     else:
         messagebox.showinfo("Success", "Parameters Updated.")

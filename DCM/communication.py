@@ -107,20 +107,12 @@ def intify(values):
     return values_intify
 
 def txSer(updated_values, mode, sim_status, send_recv):
-    dataAray = pack_array(updated_values, mode, sim_status, send_recv)
-    dataAray.append(1) #LED RED AND GREEN
-    dataAray.append(1)
-    dataTuple = tuple(dataAray)
+    dataArray = pack_array(updated_values, mode, sim_status, send_recv)
+    dataArray.append(1) #LED RED AND GREEN
+    dataArray.append(1)
+    dataTuple = tuple(dataArray)
     dataStruct = struct.Struct('<BBHHHHHHHdHHdHHdddHHddBB')
     dataPacked = dataStruct.pack(*dataTuple)
-
-    # dataAray = pack_array(updated_values, mode, sim_status, send_recv)[0:3]
-    # dataAray.append(1) #LED RED AND GREEN
-    # dataAray.append(1)
-    # print("\n\n Data Array: ", dataAray)
-    # dataTuple = tuple(dataAray)
-    # dataStruct = struct.Struct('<BBHBB')
-    # dataPacked = dataStruct.pack(*dataTuple)
 
     try:
         baudrate = SER_BAUD_RATE
@@ -131,6 +123,8 @@ def txSer(updated_values, mode, sim_status, send_recv):
     except serial.SerialException as e:
         print(f"Error opening serial port: {e}")
 
+    return dataArray
+
 def rxSer():
     dataStruct = struct.Struct('<HHHHHHHdHHdHHdddHHdddd')
 
@@ -139,19 +133,22 @@ def rxSer():
         port = SER_COM_PORT
         with serial.Serial(port, baudrate=baudrate, timeout=1) as ser:
             dataReceived = ser.read(dataStruct.size)
-            
-            #DEBUG
-            print(dataReceived)
 
             if dataReceived:
                 dataTuple = dataStruct.unpack(dataReceived)
+
+                dataArray = arrayify(dataTuple)
+                return dataArray
                 
-                #DEBUGGING
-                print(dataTuple) 
-                return dataTuple
             else:
                 print("No data received")
                 return None
     except serial.SerialException as e:
         print(f"Error reading from serial port: {e}")
         return None
+    
+def arrayify(tup):
+    arr = []
+    for i in tup:
+        arr.append(i)
+    return arr
