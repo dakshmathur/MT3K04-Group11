@@ -223,8 +223,8 @@ def dashboard_state():
             else:
                 updated_values["ATR FALLBACK MODE"] = 'On'
     
-        sim_status = 0
-        send_recv = 0
+        sim_status = 16
+        send_recv = 55
         
         if (vp.is_valid_parameters(updated_values, mode.get())):
             db.update_mode_parameters(current_user_id, mode.get(), updated_values)
