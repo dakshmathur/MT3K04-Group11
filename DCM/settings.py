@@ -111,11 +111,11 @@ DYNAMIC_AV_DELAY_MAP = {
 }
 
 ACTIVITY_THRESHOLD_MAP = {
-    "V-Low": 0,
-    "Low": 1,
-    "Med-Low": 2,
-    "Med": 3,
-    "Med-High": 4,
-    "High": 5,
-    "V-High": 6
+    "V-Low": 1,
+    "Low": 2,
+    "Med-Low": 3,
+    "Med": 4,
+    "Med-High": 5,
+    "High": 6,
+    "V-High": 7
 }
