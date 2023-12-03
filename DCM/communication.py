@@ -149,3 +149,11 @@ def rxSer():
     except serial.SerialException as e:
         print(f"Error reading from serial port: {e}")
         return None
+    
+# def get_last_two_values(dataRecievedArrayFloat):
+#     if len(dataRecievedArrayFloat) >= 2:
+#         last_two_values = dataRecievedArrayFloat[-2:]  # Get the last two values
+#         return last_two_values
+#     else:
+#         print("Not enough values in the array")
+#         return None
